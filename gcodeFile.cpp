@@ -177,6 +177,7 @@ void GCodeFile::preprocess()
     removePercentSign();
     toCommandLines();
     parse();
+    sortByPriority();
 }
 
 
@@ -246,9 +247,8 @@ void GCodeFile::printCommands()
         for( int i = 0; i < command_vec.size(); i++)
         {
             for(int j = 0; j < command_vec[i].size(); j++)
-                if(command_vec[i][j].getPriority() == -1 && command_vec[i][j].getCommandType() != 'N')
                 std::cout << command_vec[i][j].getPriority() << "[" << command_vec[i][j].getCommandType() << "]("<<command_vec[i][j].getCommandValue() << ") ";
-            // std::cout << std::endl;
+            std::cout << std::endl;
         }
 }
 
@@ -262,7 +262,7 @@ void GCodeFile::sortByPriority()
 {
     for(int i = 0; i < command_vec.size(); i++)
     {
-        // std::ranges::sort(  );
+        std::ranges::sort(command_vec[i], {}, &GCodeCommand::getPriority);
     }
 
 
