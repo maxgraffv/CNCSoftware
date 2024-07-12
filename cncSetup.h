@@ -20,6 +20,7 @@ class CNCSetup
 
         Units units;
 
+        void processLine( std::vector< GCodeCommand > commandLine );
 
     public:
         CNCSetup(

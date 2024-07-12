@@ -32,28 +32,27 @@
 
     }
 
-
-
-
-
-
     void CNCSetup::run( GCodeFile gcodeFile )
     {
 
 
         std::vector< std::vector< GCodeCommand> > command_vec = gcodeFile.getCommand_vec();
-
         gcodeFile.printCommands();
 
+        for(int i = 0; i < command_vec.size(); i++)
+            processLine( command_vec[i] );
+
+    }
 
 
+    void CNCSetup::processLine( std::vector< GCodeCommand > command )
+    {
+
+        for( int i = 0; i < command.size(); i++ )
+        {
+            // process(  )
 
 
-
-
-
-
-
-
+        }
 
     }
