@@ -2,7 +2,6 @@
 #define GCODE_COMMAND_H
 
 #include <string>
-#include "commandTypeFuncMap.h"
 
 class GCodeCommand
 {
@@ -11,8 +10,7 @@ class GCodeCommand
 
         std::string commandStr;
         char commandType;
-        int commandValue;
-        int command;
+        double commandValue;
         int priority;
         void (*commandFunc_ptr)();
 
@@ -21,6 +19,9 @@ class GCodeCommand
     public:
 
         GCodeCommand( std::string commandStr );
+        char getCommandType();
+        double getCommandValue();
+        int getPriority();
 
 
 

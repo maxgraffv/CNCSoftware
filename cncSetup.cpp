@@ -1,7 +1,7 @@
 #include <vector>
 #include "stepperMotor.h"
 #include "cncSetup.h"
-#include "gcodeFile.h"
+#include "gCodeFile.h"
 
 
 
@@ -40,8 +40,10 @@
     void CNCSetup::run( GCodeFile gcodeFile )
     {
 
-        // gcodeFile.parse();
 
+        // std::vector< std::vector< GCodeCommand> > command_vec = gcodeFile.getCommand_vec();
+
+        gcodeFile.printCommands();
 
 
 

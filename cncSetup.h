@@ -5,9 +5,10 @@
 #include "stepperMotor.h"
 #include "spindle.h"
 #include "unitsEnum.h"
-#include "gcodeFile.h"
+#include "gCodeFile.h"
 
-struct CNCSetup
+
+class CNCSetup
 {
 
     private:

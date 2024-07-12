@@ -2,7 +2,7 @@
 #include "cncSetup.h"
 #include "stepperMotor.h"
 #include "spindle.h"
-#include "gcodeFile.h"
+#include "gCodeFile.h"
 #include "unitsEnum.h"
 
 
@@ -23,7 +23,7 @@ int main()
     myCNC.run(operation1);
 
 
-    operation1.print();
+    // operation1.print();
     
 
 
