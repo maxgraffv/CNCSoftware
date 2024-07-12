@@ -5,7 +5,7 @@
 #include "stepperMotor.h"
 #include "spindle.h"
 #include "unitsEnum.h"
-#include "gCodeFile.h"
+#include "gcodeFile.h"
 
 
 class CNCSetup

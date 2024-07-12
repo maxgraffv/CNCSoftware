@@ -5,7 +5,7 @@
 #include <ranges>
 
 #include "fileHandling.h"
-#include "gCodeFile.h"
+#include "gcodeFile.h"
 #include "gcodeCommand.h"
 
 

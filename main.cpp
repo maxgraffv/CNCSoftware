@@ -2,7 +2,7 @@
 #include "cncSetup.h"
 #include "stepperMotor.h"
 #include "spindle.h"
-#include "gCodeFile.h"
+#include "gcodeFile.h"
 #include "unitsEnum.h"
 
 
@@ -19,7 +19,7 @@ int main()
 
 
     CNCSetup myCNC( motorAxisX, motorAxisY_1, motorAxisY_2, motorAxisZ, spindle, Units::milimeter );
-    GCodeFile operation1( "1001.ngc" );
+    GCodeFile operation1( "101example.ngc" );
     myCNC.run(operation1);
 
 

@@ -1,7 +1,7 @@
 #include <vector>
 #include "stepperMotor.h"
 #include "cncSetup.h"
-#include "gCodeFile.h"
+#include "gcodeFile.h"
 
 
 
