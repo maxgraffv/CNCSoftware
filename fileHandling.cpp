@@ -43,3 +43,6 @@ std::string File::getStr()
     return str;
 }
 
+
+
+

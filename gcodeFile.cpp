@@ -237,22 +237,34 @@ void GCodeFile::parse()
         commandLineVec.clear();
 
     }
-    
-
-
 }
+
+
 
 void GCodeFile::printCommands()
 {
         for( int i = 0; i < command_vec.size(); i++)
         {
             for(int j = 0; j < command_vec[i].size(); j++)
-                std::cout << " [" << command_vec[i][j].getCommandType() << "]("<<command_vec[i][j].getCommandValue() << ") ";
-            std::cout << std::endl;
+                if(command_vec[i][j].getPriority() == -1 && command_vec[i][j].getCommandType() != 'N')
+                std::cout << command_vec[i][j].getPriority() << "[" << command_vec[i][j].getCommandType() << "]("<<command_vec[i][j].getCommandValue() << ") ";
+            // std::cout << std::endl;
         }
 }
 
 std::vector< std::vector< GCodeCommand> > GCodeFile::getCommand_vec()
 {
     return command_vec;
+}
+
+
+void GCodeFile::sortByPriority()
+{
+    for(int i = 0; i < command_vec.size(); i++)
+    {
+        // std::ranges::sort(  );
+    }
+
+
+
 }

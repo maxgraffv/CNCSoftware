@@ -18,15 +18,17 @@ class GCodeFile
         void parenthesisCommentsRemove();
         void removePercentSign();
         void whiteSpacesRemove();
+        void toCommandLines();
+        void parse();
+        void sortByPriority();
         std::vector<std::string> commandLines;
         std::vector< std::vector< GCodeCommand> > command_vec;
     public:
         GCodeFile( std::string gcode_path );
         void preprocess();
-        void parse();
         void printGCodeStr();
         void printCommands();
-        void toCommandLines();
+
 
         std::vector< std::vector< GCodeCommand> > getCommand_vec();
 

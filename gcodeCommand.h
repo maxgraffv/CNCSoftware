@@ -13,6 +13,7 @@ class GCodeCommand
         double commandValue;
         int priority;
         void (*commandFunc_ptr)();
+        void setPriority();
 
 
 

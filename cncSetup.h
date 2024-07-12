@@ -21,10 +21,6 @@ class CNCSetup
         Units units;
 
 
-
-
-
-
     public:
         CNCSetup(
             StepperMotor& xAxisMotor,
@@ -43,8 +39,6 @@ class CNCSetup
         void setSpindle( Spindle& spindle );
 
         void run( GCodeFile gcodeFile );
-
-
 
 };
 

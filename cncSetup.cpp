@@ -41,7 +41,7 @@
     {
 
 
-        // std::vector< std::vector< GCodeCommand> > command_vec = gcodeFile.getCommand_vec();
+        std::vector< std::vector< GCodeCommand> > command_vec = gcodeFile.getCommand_vec();
 
         gcodeFile.printCommands();
 
