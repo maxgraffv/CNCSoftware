@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <ranges>
+#include <algorithm>
 
 #include "fileHandling.h"
 #include "gcodeFile.h"
