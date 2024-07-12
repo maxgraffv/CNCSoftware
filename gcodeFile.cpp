@@ -4,8 +4,9 @@
 #include <string>
 #include <ranges>
 
-#include "gcodeFile.h"
 #include "fileHandling.h"
+#include "gCodeFile.h"
+#include "gcodeCommand.h"
 
 
 GCodeFile::GCodeFile( std::string gcode_path )
@@ -144,7 +145,7 @@ void GCodeFile::whiteSpacesRemove()
 
 }
 
-void GCodeFile::print()
+void GCodeFile::printGCodeStr()
 {
     std::string border(20, '#');
     std::cout << border << std::endl;
@@ -173,6 +174,8 @@ void GCodeFile::preprocess()
     semicolonCommentsRemove();
     whiteSpacesRemove();
     removePercentSign();
+    toCommandLines();
+    parse();
 }
 
 
@@ -197,54 +200,58 @@ void GCodeFile::toCommandLines()
 
 }
 
-// bool isLetter(char c)
-// {
-//     if( c >= 'A' && c <= 'Z')
-//         return true;
-//     else
-//         return false;
-// }
 
-// void GCodeFile::parse()
-// {
-//     int word_begin_index = 0;
-//     int word_end_index = 0;
-//     std::vector< GCodeCommand> commandLineVec;
-//     std::string word("");
-//     std::string line("");
+void GCodeFile::parse()
+{
 
-//     for(int i = 0; i < commandLines.size(); i++)
-//     {
-//         line = commandLines[i];
+    std::vector< GCodeCommand> commandLineVec;
+    std::string input("");
+    std::string current;
 
-//         for(int j = 0; j < line.size(); j++)
-//         {
-//             if( isLetter(line[j]) )
-//             {
-//                 word += line[j];
-//                 for(int k = j+1; k < line.size(); k++)
-//                 {
+    for(int i = 0; i < commandLines.size(); i++)
+    {
+        input = commandLines[i];
+        for (int j = 0; j < input.length(); j++) {
+            char c = input[j];
 
-//                     if( isLetter(line[k]) || line[k] == '\n')
-//                     {
-//                         GCodeCommand command(word);
-//                         commandLineVec.push_back( command );
-//                         word.clear();
-//                         j = k;
-//                     }
-//                     else
-//                     {
-//                         word += line[k];
-//                     }
+            // If the character is an uppercase letter and current is not empty, push current to result
+            if (isalpha(c) && isupper(c) && !current.empty()) {
+                GCodeCommand command( current );
+                commandLineVec.push_back( command );
+                current.clear();
+            }
+            
+            // Append the current character to current substring
+            current += c;
+        }
 
+        // Add the last accumulated substring to result
+        if (!current.empty()) {
+            GCodeCommand command( current );
+            commandLineVec.push_back( command );
+            current.clear();
+        }
 
-//                 }
+        command_vec.push_back( commandLineVec );
+        commandLineVec.clear();
 
-//             }
-//         }
-
-//     }
+    }
     
 
 
-// }
+}
+
+void GCodeFile::printCommands()
+{
+        for( int i = 0; i < command_vec.size(); i++)
+        {
+            for(int j = 0; j < command_vec[i].size(); j++)
+                std::cout << " [" << command_vec[i][j].getCommandType() << "]("<<command_vec[i][j].getCommandValue() << ") ";
+            std::cout << std::endl;
+        }
+}
+
+std::vector< std::vector< GCodeCommand> > GCodeFile::getCommand_vec()
+{
+    return command_vec;
+}
