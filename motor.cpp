@@ -7,12 +7,12 @@ int Motor::counter = 0;
 
 Motor::Motor() : id(counter++), speed(0)
 {
-    std::cout << "Motor created id: "<< id << std::endl;
+    // std::cout << "Motor created id: "<< id << std::endl;
 }
 
 Motor::~Motor()
 {
-    std::cout << "Motor destroyed id: " << id << std::endl;
+    // std::cout << "Motor destroyed id: " << id << std::endl;
 }
 
 int Motor::getId()
