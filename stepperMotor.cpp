@@ -25,11 +25,13 @@ rotationDirection(rotationDirection)
     // Set pin modes
     pinMode(step_pin, OUTPUT);
     pinMode(dir_pin, OUTPUT);
-    pinMode(en_pin, OUTPUT);
+    pinMode(en_pin, OUTPUT);x
     pinMode(ms1_pin, OUTPUT);
     pinMode(ms2_pin, OUTPUT);
 
     enable();
+
+    setMicrosteps( microstepResolution );
 }
 
 StepperMotor::~StepperMotor()
