@@ -6,6 +6,14 @@
 #include "spindle.h"
 #include "unitsEnum.h"
 #include "gcodeFile.h"
+#include "motionTypeEnum.h"
+#include "motionPlaneEnum.h"
+#include "feedMode.h"
+#include "distanceMode.h"
+#include "arcDistanceMode.h"
+#include "spindleState.h"
+#include "Tool.h"
+#include "pathMode.h"
 
 
 class CNCSetup
@@ -17,10 +25,29 @@ class CNCSetup
         StepperMotor yAxisMotor2;
         StepperMotor zAxisMotor;
         Spindle spindle;
-
         Units units;
 
-        void processLine( std::vector< GCodeCommand > commandLine );
+        double posX;
+        double posY;
+        double posZ;
+
+        double feedRate;
+        Tool currentTool;
+        MotionTypeEnum motionType;
+        MotionPlane motionPlane;
+        FeedMode feedMode;
+        DistanceMode distanceMode;
+        ArcDistanceMode arcDistanceMode;
+        PathMode pathMode;
+
+
+
+
+        SpindleState spindleState;
+        double spindleSpeed;
+        double toolLengthOffset;
+
+
 
     public:
         CNCSetup(
@@ -31,16 +58,65 @@ class CNCSetup
             Spindle& spindle,
             Units units );
 
-        static void moveX(double value);
-        static void moveY(double value);
-        static void moveZ(double value);
         void setXAxisMotor( StepperMotor& xAxisMotor );
         void setYAxisMotor( StepperMotor& xAxisMotor );
         void setZAxisMotor( StepperMotor& xAxisMotor );
         void setSpindle( Spindle& spindle );
+        void move(double x, double y, double z, double i, double j, double k);
 
-        void run( GCodeFile gcodeFile );
+
+        void run( GCodeFile &gcodeFile );
+        int execute( std::vector< GCodeCommand >& command_line );
+
+        void process( std::vector< GCodeCommand >& command_line );
+
+        int programPause();
+        int programStop();
+
+        int setNewTool( double newToolId );
+        Tool getTool();
+
+        int setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand>& command_line );
+        MotionTypeEnum getMotionType();
+
+        int setMotionPlane( MotionPlane motionPlane );
+        MotionPlane getMotionPlane();
+        
+        int setFeedRate( double feedRate );
+        double getFeedRate();
+
+        int setFeedMode( FeedMode feedMode );
+        FeedMode getFeedMode();
+
+        int setUnits( Units units );
+        Units getUnits();
+
+        int setDistanceMode( DistanceMode distanceMode );
+        DistanceMode getDistanceMode();
+
+        int setArcDistanceMode( ArcDistanceMode arcDistanceMode );
+        ArcDistanceMode getArcDistanceMode();
+
+        int setPathMode( PathMode pathMode, std::vector< GCodeCommand >& command_line );
+        PathMode getPathMode();
+        double pathMode_P;
+        double pathMode_Q;
+
+        int setSpindleState( SpindleState spindleState, std::vector<GCodeCommand>& comand_line );
+        SpindleState getSpindleState();
+
+        int setSpindleSpeed( double speed);
+        double getSpindleSpeed();
+
+        int setToolLengthOffset( std::vector< GCodeCommand >& command_line );
+        int cancelToolLengthOffset();
+        double getToolLengthOffset();
+
+        int toolChange();
+
 
 };
+
+bool containsCodeType(std::vector< GCodeCommand > command_vec, char c);
 
 #endif
