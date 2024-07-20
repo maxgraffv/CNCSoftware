@@ -22,6 +22,7 @@ class StepperMotor : public Motor
         int step_pin, dir_pin, en_pin, ms2_pin, ms1_pin;
         MicrostepResolution microstepResolution;
         MotorRotationDirection rotationDirection;
+        double linearStep; //milimeters
         double speed;
         double stepDelay_microsec;
 
@@ -34,7 +35,7 @@ class StepperMotor : public Motor
         */
 
     public:
-        StepperMotor(int step_pin, int dir_pin, int en_pin, int ms1_pin, int ms2_pin, MicrostepResolution MicrostepResolution, MotorRotationDirection rotationDirection);
+        StepperMotor(int step_pin, int dir_pin, int en_pin, int ms1_pin, int ms2_pin, MicrostepResolution MicrostepResolution, MotorRotationDirection rotationDirection, double linearStep);
         virtual ~StepperMotor();
         
         void enable();
@@ -51,6 +52,9 @@ class StepperMotor : public Motor
 
         void setStepDelayMicrosec( double microseconds );
         double getStepDelayMicrosec();
+
+        void setLinearStep( double linearStep ); // milimeters
+        double getLinearStep();
 
         void step();
 

@@ -10,11 +10,11 @@
 StepperMotor::StepperMotor(int step_pin, int dir_pin, int en_pin, 
     int ms1_pin, int ms2_pin, 
     MicrostepResolution microstepResolution, 
-    MotorRotationDirection rotationDirection)
+    MotorRotationDirection rotationDirection, double linearStep)
 :step_pin(step_pin), dir_pin(dir_pin), en_pin(en_pin), 
 ms1_pin(ms1_pin), ms2_pin(ms2_pin), 
 microstepResolution(microstepResolution),
-rotationDirection(rotationDirection)
+rotationDirection(rotationDirection), linearStep(linearStep)
 {
     // Setup wiringPi
     if (wiringPiSetup() == -1) {
@@ -116,6 +116,16 @@ void StepperMotor::setStepDelayMicrosec( double microseconds )
 double StepperMotor::getStepDelayMicrosec()
 {
     return stepDelay_microsec;
+}
+
+void StepperMotor::setLinearStep( double linearStep )
+{
+    this->linearStep = linearStep;
+}
+
+double StepperMotor::getLinearStep()
+{
+    return linearStep;
 }
 
 void StepperMotor::step()

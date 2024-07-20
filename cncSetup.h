@@ -14,6 +14,8 @@
 #include "spindleState.h"
 #include "Tool.h"
 #include "pathMode.h"
+#include <thread>
+#include <functional>
 
 
 class CNCSetup
@@ -27,12 +29,13 @@ class CNCSetup
         Spindle spindle;
         Units units;
 
-        double posX;
-        double posY;
-        double posZ;
+        double absolutePosX;
+        double absolutePosY;
+        double absolutePosZ;
 
         double feedRate;
         Tool currentTool;
+
         MotionTypeEnum motionType;
         MotionPlane motionPlane;
         FeedMode feedMode;
@@ -62,7 +65,10 @@ class CNCSetup
         void setYAxisMotor( StepperMotor& xAxisMotor );
         void setZAxisMotor( StepperMotor& xAxisMotor );
         void setSpindle( Spindle& spindle );
+
         void move(double x, double y, double z, double i, double j, double k);
+        void feedrateMoveBy(int deltaX, int deltaY, int deltaZ);
+        void rotate(StepperMotor& motor, double mmDistance, double axisFeedrate);
 
 
         void run( GCodeFile &gcodeFile );

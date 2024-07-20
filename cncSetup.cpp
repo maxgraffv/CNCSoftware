@@ -10,6 +10,8 @@
 #include "arcDistanceMode.h"
 #include "spindleState.h"
 #include "Tool.h"
+#include <thread>
+#include <functional>
 
 
 
@@ -408,14 +410,64 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
 
 void CNCSetup::move(double newX, double newY, double newZ, double i, double j, double k)
 {
-    double currentX = posX;
-    double currentY = posY;
-    double currentZ = posZ;
+    switch( motionType )
+    {
+        case MotionTypeEnum::RapidPositioning :
+            switch( distanceMode )
+            {
+                case DistanceMode::absoluteDistance :
+                    double currentX = absolutePosX;
+                    double currentY = absolutePosY;
+                    double currentZ = absolutePosZ;
 
-    double deltaX = newX - posX;
-    double deltaY = newY - posY;
-    double deltaZ = newZ - posZ;
+                    double deltaX = newX - currentX;
+                    double deltaY = newY - currentY;
+                    double deltaZ = newZ - currentZ;
+
+                    rapidMoveBy(deltaX, deltaY, deltaZ);
+                    break;
+                case DistanceMode::incrementalDistance :
+                    rapidMoveBy(newX, newY, newZ);
+                    break;
+            }
+            break;
+        case MotionTypeEnum::LinearInterpolation :
+            switch( distanceMode )
+            {
+                case DistanceMode::absoluteDistance :
+                    double currentX = absolutePosX;
+                    double currentY = absolutePosY;
+                    double currentZ = absolutePosZ;
+
+                    double deltaX = newX - currentX;
+                    double deltaY = newY - currentY;
+                    double deltaZ = newZ - currentZ;
+
+                    feedrateMoveBy(deltaX, deltaY, deltaZ);
+                    break;
+                case DistanceMode::incrementalDistance :
+                    feedrateMoveBy(newX, newY, newZ);
+                    break;
+            }
+            break;
+        case MotionTypeEnum::CircularInterpolationClockwise :
+
+            break;
+        case MotionTypeEnum::CircularInterpolationCounterClockwise :
+
+            break;
+
+    }
+
     
+        // std::cout << "Moved in MotionType: " << (int)CNCSetup::getMotionType() 
+        // << " by X: " << newX << " Y: "<< newY << " Z: " << newZ << " I: " << i << " J: " << j << std::endl;
+    // std::cout << "FR x: " << feedrateX << " y: " << feedrateY << " z: " << feedrateZ << std::endl;
+
+}
+
+void CNCSetup::feedrateMoveBy(int deltaX, int deltaY, int deltaZ)
+{
     double deltaD = sqrt( pow(deltaX , 2) + pow(deltaY, 2) +  pow(deltaZ, 2));
 
     double XtoD = deltaX/deltaD;
@@ -428,15 +480,37 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
     double feedrateY = YtoD*feedrateD;
     double feedrateZ = YtoD*feedrateD;
 
-    posX = newX;
-    posY = newY;
-    posZ = newZ;
+    std::thread t1( rotate, std::ref( xAxisMotor ), deltaX, feedrateX );
+    std::thread t2( rotate, std::ref( yAxisMotor1 ), deltaY, feedrateY );
+    std::thread t3( rotate, std::ref( yAxisMotor2 ), deltaY, feedrateY );
+    std::thread t4( rotate, std::ref( zAxisMotor ), deltaZ, feedrateZ );
 
-    // std::cout << "Moved in MotionType: " << (int)CNCSetup::getMotionType() 
-        // << " by X: " << newX << " Y: "<< newY << " Z: " << newZ << " I: " << i << " J: " << j << std::endl;
-    // std::cout << "FR x: " << feedrateX << " y: " << feedrateY << " z: " << feedrateZ << std::endl;
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
 
 }
+
+void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrate)
+{
+
+    double microstepsPerRevolution = 200* static_cast<int>(motor.getMicrosteps());
+    double revolutionsNeeded = mmDistance/motor.getLinearStep();
+    int microstepsNeeded = static_cast<int>( revolutionsNeeded*microstepsPerRevolution );
+
+    double mmPerMicrostep = motor.getLinearStep()/microstepsPerRevolution; //mm/microstep
+    double feedratePerMicrosec = axisFeedrate/60/1000000; // mm/microsec
+
+    double microsecsPerMicrostep = mmPerMicrostep / feedratePerMicrosec;
+    motor.setStepDelayMicrosec( static_cast<int>( microsecsPerMicrostep ));
+
+    for(int i = 0; i < microstepsNeeded; i++)
+        motor.step();
+
+
+}
+
 
 int CNCSetup::programStop()
 {
