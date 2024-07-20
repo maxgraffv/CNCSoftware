@@ -34,7 +34,6 @@ int GCodeCommand::getPriority()
 
 void GCodeCommand::setPriority()
 {
-    int p = -1;
     switch(commandType)
     {
         case 'A':
@@ -106,7 +105,7 @@ void GCodeCommand::setPriority()
             break;
 
         case 'R':
-            std::cout << "Priority unknown: " << commandType << std::endl;
+            priority = 23;
             break;
 
         case 'S':
