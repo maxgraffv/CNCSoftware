@@ -20,7 +20,8 @@ int main()
     Spindle spindle(1000, 1000);
 
 
-    motorAxisZ.step();
+    for(int i = 0; i < 32000; i++)
+        motorAxisZ.step();
 
     CNCSetup myCNC( motorAxisX, motorAxisY_1, motorAxisY_2, motorAxisZ, spindle, Units::milimeter );
     GCodeFile operation1( "101exampleSHORT.ngc" );
