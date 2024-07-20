@@ -1,4 +1,5 @@
 #include "spindle.h"
+#include "MotorRotationDirectionEnum.h"
 
 Spindle::Spindle( int pwm_pin, int dir_pin):pwm_pin(pwm_pin), dir_pin(dir_pin)
 {

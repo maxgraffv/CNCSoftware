@@ -2,6 +2,7 @@
 #define SPINDLE_H
 
 #include "motor.h"
+#include "MotorRotationDirectionEnum.h"
 
 class Spindle : public Motor
 {

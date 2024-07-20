@@ -1,6 +1,7 @@
 #include <iostream>
 #include "motor.h"
 #include "axisEnum.h"
+#include "MotorRotationDirectionEnum.h"
 
 
 int Motor::counter = 0;

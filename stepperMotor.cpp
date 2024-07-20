@@ -1,6 +1,7 @@
 #include "stepperMotor.h"
 
 #include <wiringPi.h>
+#include "MotorRotationDirectionEnum.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

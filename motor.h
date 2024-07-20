@@ -2,7 +2,7 @@
 #define MOTOR_H
 
 #include <iostream>
-#include "MotorRotationDIrectionEnum.h"
+#include "MotorRotationDirectionEnum.h"
 
 class Motor
 {
