@@ -108,6 +108,16 @@ MotorRotationDirection StepperMotor::getDirection()
     return rotationDirection;
 }
 
+void StepperMotor::setStepDelayMicrosec( double microseconds )
+{
+    this->stepDelay_microsec = microseconds;
+}
+
+double StepperMotor::getStepDelayMicrosec()
+{
+    return stepDelay_microsec;
+}
+
 void StepperMotor::step()
 {
     digitalWrite(step_pin, HIGH);
