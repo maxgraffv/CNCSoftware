@@ -7,13 +7,16 @@ class Spindle : public Motor
 {
 
     private:
+        int pwm_pin;
+        int dir_pin;
+
         double toolLen; //milimeters
         double temp;
         double temp_max;
 
     public:
 
-        Spindle();
+        Spindle(int pwm_pin, int dir_pin);
         virtual ~Spindle();
 
         void setSpeed(double speed) override;
@@ -28,6 +31,7 @@ class Spindle : public Motor
         double getTemp();
         void setTempMax(double tempMax);
         double getTempMax();
+        
 
 
 
