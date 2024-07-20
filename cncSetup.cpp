@@ -410,19 +410,23 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
 
 void CNCSetup::move(double newX, double newY, double newZ, double i, double j, double k)
 {
+    double currentX = absolutePosX;
+    double currentY = absolutePosY;
+    double currentZ = absolutePosZ;
+
+    double deltaX;
+    double deltaY;
+    double deltaZ;
     switch( motionType )
     {
         case MotionTypeEnum::RapidPositioning :
             switch( distanceMode )
             {
                 case DistanceMode::absoluteDistance :
-                    double currentX = absolutePosX;
-                    double currentY = absolutePosY;
-                    double currentZ = absolutePosZ;
 
-                    double deltaX = newX - currentX;
-                    double deltaY = newY - currentY;
-                    double deltaZ = newZ - currentZ;
+                    deltaX = newX - currentX;
+                    deltaY = newY - currentY;
+                    deltaZ = newZ - currentZ;
 
                     // rapidMoveBy(deltaX, deltaY, deltaZ);
                     break;
@@ -435,13 +439,10 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
             switch( distanceMode )
             {
                 case DistanceMode::absoluteDistance :
-                    double currentX = absolutePosX;
-                    double currentY = absolutePosY;
-                    double currentZ = absolutePosZ;
 
-                    double deltaX = newX - currentX;
-                    double deltaY = newY - currentY;
-                    double deltaZ = newZ - currentZ;
+                    deltaX = newX - currentX;
+                    deltaY = newY - currentY;
+                    deltaZ = newZ - currentZ;
 
                     feedrateMoveBy(deltaX, deltaY, deltaZ);
                     break;
@@ -492,7 +493,7 @@ void CNCSetup::feedrateMoveBy(int deltaX, int deltaY, int deltaZ)
 
 }
 
-void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrate)
+static void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrate)
 {
 
     double microstepsPerRevolution = 200* static_cast<int>(motor.getMicrosteps());
