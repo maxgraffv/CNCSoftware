@@ -493,7 +493,7 @@ void CNCSetup::feedrateMoveBy(double deltaX, double deltaY, double deltaZ)
 
 }
 
-static void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrate)
+void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrate)
 {
 
     double microstepsPerRevolution = 200* static_cast<int>(motor.getMicrosteps());

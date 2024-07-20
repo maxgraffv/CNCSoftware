@@ -68,7 +68,7 @@ class CNCSetup
 
         void move(double x, double y, double z, double i, double j, double k);
         void feedrateMoveBy(double deltaX, double deltaY, double deltaZ);
-        static void rotate(StepperMotor& motor, double mmDistance, double axisFeedrate);
+        void rotate(StepperMotor& motor, double mmDistance, double axisFeedrate);
 
 
         void run( GCodeFile &gcodeFile );
