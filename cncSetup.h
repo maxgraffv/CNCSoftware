@@ -67,7 +67,7 @@ class CNCSetup
         void setSpindle( Spindle& spindle );
 
         void move(double x, double y, double z, double i, double j, double k);
-        void feedrateMoveBy(int deltaX, int deltaY, int deltaZ);
+        void feedrateMoveBy(double deltaX, double deltaY, double deltaZ);
         static void rotate(StepperMotor& motor, double mmDistance, double axisFeedrate);
 
 

@@ -467,7 +467,7 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
 
 }
 
-void CNCSetup::feedrateMoveBy(int deltaX, int deltaY, int deltaZ)
+void CNCSetup::feedrateMoveBy(double deltaX, double deltaY, double deltaZ)
 {
     double deltaD = sqrt( pow(deltaX , 2) + pow(deltaY, 2) +  pow(deltaZ, 2));
 
