@@ -36,15 +36,15 @@ int main()
 
 
     motorAxisX.setStepDelayMicrosec(100);
-    for(int i = 0; i < 3200; i++)
+    for(int i = 0; i < 32000; i++)
         motorAxisX.step();
 
     motorAxisY_1.setStepDelayMicrosec(100);
-    for(int i = 0; i < 3200; i++)
+    for(int i = 0; i < 32000; i++)
         motorAxisY_1.step();
 
     motorAxisY_2.setStepDelayMicrosec(100);
-    for(int i = 0; i < 3200; i++)
+    for(int i = 0; i < 32000; i++)
         motorAxisY_2.step();
 
     CNCSetup myCNC( motorAxisX, motorAxisY_1, motorAxisY_2, motorAxisZ, spindle, Units::milimeter );
