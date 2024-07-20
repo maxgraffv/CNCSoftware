@@ -1,7 +1,6 @@
-sudo apt-get update
 
 gpio -v
 
-g++ *.cpp -o main -lwiringPi
+g++ *.cpp -o main -lwiringPi -std=c++20
 
-./main
+#./main
