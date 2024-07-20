@@ -8,6 +8,7 @@
 #include "MotorRotationDirectionEnum.h"
 #include "rpi3pinout.h"
 #include <thread>
+#include <functional>
 
 /*
 FOR GPIO14 GPIO15 to work, UART has to be disabled
@@ -40,10 +41,10 @@ int main()
     Spindle spindle(1000, 1000);
 
 
-    std::thread t1( runMotor, motorAxisX );
-    std::thread t2( runMotor, motorAxisY_1 );
-    std::thread t3( runMotor, motorAxisY_2 );
-    std::thread t4( runMotor, motorAxisZ );
+    std::thread t1( runMotor, std::ref(motorAxisX) );
+    std::thread t2( runMotor, std::ref(motorAxisY_1) );
+    std::thread t3( runMotor, std::ref(motorAxisY_2) );
+    std::thread t4( runMotor, std::ref(motorAxisZ) );
 
 
     t1.join();
