@@ -22,7 +22,7 @@ CNCSetup::CNCSetup(
         Spindle& spindle, Units units = Units::milimeter) 
         : xAxisMotor(xAxisMotor), yAxisMotor1(yAxisMotor1),
             yAxisMotor2(yAxisMotor2), zAxisMotor(zAxisMotor),
-            spindle(spindle), units(units), posX(0), posY(0), posZ(0), currentTool(0)
+            spindle(spindle), units(units), absolutePosX(0), absolutePosY(0), absolutePosZ(0), currentTool(0)
 {
 
 }
@@ -424,10 +424,10 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
                     double deltaY = newY - currentY;
                     double deltaZ = newZ - currentZ;
 
-                    rapidMoveBy(deltaX, deltaY, deltaZ);
+                    // rapidMoveBy(deltaX, deltaY, deltaZ);
                     break;
                 case DistanceMode::incrementalDistance :
-                    rapidMoveBy(newX, newY, newZ);
+                    // rapidMoveBy(newX, newY, newZ);
                     break;
             }
             break;
