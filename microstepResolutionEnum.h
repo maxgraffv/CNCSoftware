@@ -2,15 +2,15 @@
 #define MICROSTEPSRESOLUTION_ENUM_H
 
 enum class MicrostepResolution {
-    FULL_STEP = 1,
-    HALF_STEP = 2,
-    QUARTER_STEP = 4,
+    // FULL_STEP = 1,
+    // HALF_STEP = 2,
+    // QUARTER_STEP = 4,
     EIGHTH_STEP = 8,
     SIXTEENTH_STEP = 16,
     THIRTY_SECOND_STEP = 32,
     SIXTY_FOURTH_STEP = 64,
-    ONE_TWENTY_EIGHTH_STEP = 128,
-    TWO_FIFTY_SIXTH_STEP = 256
+    // ONE_TWENTY_EIGHTH_STEP = 128,
+    // TWO_FIFTY_SIXTH_STEP = 256
 };
 
 #endif
