@@ -23,7 +23,6 @@ class Spindle : public Motor
         double getSpeed() override;
         void setDirection( MotorRotationDirection ) override;
         MotorRotationDirection getDirection() override;
-        void rotate() override;
 
         void setToolLen(double toolLen);
         double getToolExtLen();

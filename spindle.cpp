@@ -30,11 +30,6 @@ MotorRotationDirection Spindle::getDirection()
     return getDirection();
 }
 
-void Spindle::rotate()
-{
-
-}
-
 
 void Spindle::setToolLen(double toolLen)
 {

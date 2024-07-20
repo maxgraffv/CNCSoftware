@@ -24,7 +24,6 @@ class Motor
         virtual void setDirection( MotorRotationDirection direction ) = 0;
         virtual MotorRotationDirection getDirection() = 0;
 
-        virtual void rotate() = 0;
 };
 
 #endif // MOTOR_H
