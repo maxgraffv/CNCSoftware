@@ -513,11 +513,16 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
 {
 
     double microstepsPerRevolution = 200* static_cast<int>(motor.getMicrosteps());
+    std::cout << "motor id " << motor.getId() << " msteps/rev: " << microstepsPerRevolution << std::endl;
     double revolutionsNeeded = mmDistance/motor.getLinearStep();
+    std::cout << "motor id " << motor.getId() << " revs needed: " << revolutionsNeeded << std::endl;
     int microstepsNeeded = static_cast<int>( revolutionsNeeded*microstepsPerRevolution );
+    std::cout << "motor id " << motor.getId() << " msteps needed: " << microstepsNeeded << std::endl;
 
     double mmPerMicrostep = motor.getLinearStep()/microstepsPerRevolution; //mm/microstep
+    std::cout << "motor id " << motor.getId() << " mm/mstep: " << mmPerMicrostep << std::endl;
     double feedratePerMicrosec = axisFeedrate/60/1000000; // mm/microsec
+    std::cout << "motor id " << motor.getId() << " f-rate/msec: " << feedratePerMicrosec << std::endl;
 
     double microsecsPerMicrostep = mmPerMicrostep / feedratePerMicrosec;
 
@@ -536,6 +541,11 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
 
 int CNCSetup::programStop()
 {
+    std::cout << "Program Stopping..." << std::endl;
+    xAxisMotor.disable();
+    yAxisMotor1.disable();
+    yAxisMotor2.disable();
+    zAxisMotor.disable();
     std::cout << "Program Stopped By M0 command" << std::endl;
     return 0;
 }
