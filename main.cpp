@@ -44,7 +44,7 @@ int main()
 
 
     CNCSetup myCNC( motorAxisX, motorAxisY_1, motorAxisY_2, motorAxisZ, spindle, Units::milimeter );
-    GCodeFile operation1( "101example.ngc" );
+    GCodeFile operation1( "manual.ngc" );
     myCNC.run(operation1);
 
 
