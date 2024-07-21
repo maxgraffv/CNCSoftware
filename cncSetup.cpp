@@ -333,6 +333,8 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
     double K = 0;
 
     int commandLineSize = command_line.size();
+    this->motionType = motionType;
+    std::cout << "motion type set to " << static_cast<int>(this->motionType) << std::endl;
     for( int i = 0; i < commandLineSize; i++)
     {
         if(command_line[i].getCommandType() == 'X')
@@ -414,9 +416,9 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
     double currentY = absolutePosY;
     double currentZ = absolutePosZ;
 
-    double deltaX;
-    double deltaY;
-    double deltaZ;
+    double deltaX = 0;
+    double deltaY = 0;
+    double deltaZ = 0;
     switch( motionType )
     {
         case MotionTypeEnum::RapidPositioning :
