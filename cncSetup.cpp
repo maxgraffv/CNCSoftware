@@ -520,7 +520,10 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
     double feedratePerMicrosec = axisFeedrate/60/1000000; // mm/microsec
 
     double microsecsPerMicrostep = mmPerMicrostep / feedratePerMicrosec;
-    motor.setStepDelayMicrosec( static_cast<int>( microsecsPerMicrostep ));
+
+    std::cout << "motor id " << motor.getId() << " msec/mstep: " << microsecsPerMicrostep << std::endl;
+
+    motor.setStepDelayMicrosec( static_cast<int>( microsecsPerMicrostep/2 ));
 
     std::cout << "step going...";
     for(int i = 0; i < microstepsNeeded; i++)
