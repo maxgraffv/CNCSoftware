@@ -511,6 +511,11 @@ void CNCSetup::feedrateMoveBy(double deltaX, double deltaY, double deltaZ)
 
 void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrate)
 {
+    if(mmDistance < 0)
+    {
+        mmDistance = abs( mmDistance );
+        motor.setDirection( MotorRotationDirection::ANTICLOCKWISE );
+    }
 
     double microstepsPerRevolution = 200* static_cast<int>(motor.getMicrosteps());
     std::cout << "motor id " << motor.getId() << " msteps/rev: " << microstepsPerRevolution << std::endl;
@@ -535,6 +540,8 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
         motor.step();
 
     std::cout << " step done."<<std::endl;
+
+    motor.setDirection( MotorRotationDirection::CLOCKWISE );
 
 }
 
