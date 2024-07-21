@@ -134,5 +134,5 @@ void StepperMotor::step()
     delayMicroseconds(stepDelay_microsec);  // Delay for the step
     digitalWrite(step_pin, LOW);
     delayMicroseconds(stepDelay_microsec);  // Delay before next step
-    std::cout << "step" << std::endl;
+    // std::cout << "step" << std::endl;
 }
