@@ -445,9 +445,17 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
                     deltaZ = newZ - currentZ;
 
                     feedrateMoveBy(deltaX, deltaY, deltaZ);
+
+                    absolutePosX += deltaX;
+                    absolutePosY += deltaY;
+                    absolutePosZ += deltaZ;
+
                     break;
                 case DistanceMode::incrementalDistance :
                     feedrateMoveBy(newX, newY, newZ);
+                    absolutePosX = newX;
+                    absolutePosY = newY;
+                    absolutePosZ = newZ;
                     break;
             }
             break;
@@ -461,9 +469,6 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
     }
 
     
-        // std::cout << "Moved in MotionType: " << (int)CNCSetup::getMotionType() 
-        // << " by X: " << newX << " Y: "<< newY << " Z: " << newZ << " I: " << i << " J: " << j << std::endl;
-    // std::cout << "FR x: " << feedrateX << " y: " << feedrateY << " z: " << feedrateZ << std::endl;
 
 }
 
@@ -491,6 +496,11 @@ void CNCSetup::feedrateMoveBy(double deltaX, double deltaY, double deltaZ)
     t3.join();
     t4.join();
 
+    std::cout << "Moved in MotionType: " << (int)CNCSetup::getMotionType() 
+    << " by X: " << deltaX << " Y: "<< deltaY << " Z: " << deltaZ << std::endl;
+    std::cout << "FR x: " << feedrateX << " y: " << feedrateY << " z: " << feedrateZ << std::endl;
+
+
 }
 
 void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrate)
@@ -506,9 +516,11 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
     double microsecsPerMicrostep = mmPerMicrostep / feedratePerMicrosec;
     motor.setStepDelayMicrosec( static_cast<int>( microsecsPerMicrostep ));
 
+    std::cout << "step going...";
     for(int i = 0; i < microstepsNeeded; i++)
         motor.step();
 
+    std::cout << " step done."<<std::endl;
 
 }
 
