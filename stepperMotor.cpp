@@ -96,7 +96,7 @@ void StepperMotor::setDirection( MotorRotationDirection direction)
         digitalWrite(dir_pin, HIGH);
         std::cout << "Stepper Motor Direction Set Clockwise" << std::endl;
     }
-    else
+    else if( direction == MotorRotationDirection::ANTICLOCKWISE)
     {
         digitalWrite(dir_pin, LOW);
         std::cout << "Stepper Motor Direction Set Counter Clockwise" << std::endl;
