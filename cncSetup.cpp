@@ -484,9 +484,9 @@ void CNCSetup::feedrateMoveBy(double deltaX, double deltaY, double deltaZ)
 
     double feedrateD = this->feedRate;
 
-    double feedrateX = XtoD*feedrateD;
-    double feedrateY = YtoD*feedrateD;
-    double feedrateZ = YtoD*feedrateD;
+    double feedrateX = abs( XtoD*feedrateD );
+    double feedrateY = abs( YtoD*feedrateD );
+    double feedrateZ = abs( YtoD*feedrateD );
 
     std::thread t1( [&]{rotate( xAxisMotor, deltaX, feedrateX); } );
     std::thread t2( [&]{rotate(yAxisMotor1, deltaY, feedrateY);} );
