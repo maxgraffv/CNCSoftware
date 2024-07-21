@@ -482,6 +482,10 @@ void CNCSetup::feedrateMoveBy(double deltaX, double deltaY, double deltaZ)
     double YtoD = deltaY/deltaD;
     double ZtoD = deltaZ/deltaD;
 
+    std::cout << "x/d " << XtoD << std::endl;
+    std::cout << "y/d " << YtoD << std::endl;
+    std::cout << "z/d " << ZtoD << std::endl;
+
     double feedrateD = this->feedRate;
 
     double feedrateX = abs( XtoD*feedrateD );
