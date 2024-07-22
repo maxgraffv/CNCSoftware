@@ -332,9 +332,6 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
     double X = 0;
     double Y = 0;
     double Z = 0;
-    double I = 0;
-    double J = 0;
-    double K = 0;
 
     int commandLineSize = command_line.size();
     this->motionType = motionType;
@@ -370,52 +367,97 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
             commandLineSize--;
             std::cout << "Z";
 
-        }else
-        
-        if(command_line[i].getCommandType() == 'I')
-        {
-            I = command_line[i].getCommandValue();
-            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
-            letters_used++;
-            i--;
-            commandLineSize--;
-            std::cout << "I";
-
-        }else
-
-        if(command_line[i].getCommandType() == 'J')
-        {
-            J = command_line[i].getCommandValue();
-            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
-            letters_used++;
-            i--;
-            commandLineSize--;
-            std::cout << "X";
-
-        }else
-
-        if(command_line[i].getCommandType() == 'K')
-        {
-            K = command_line[i].getCommandValue();
-            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
-            letters_used++;
-            i--;
-            commandLineSize--;
-            std::cout << "X";
         }
-        else
-            std::cout << "UNKNOWN MOTION PARAMETER "<<std::endl;
     }
 
-    move(X,Y,Z,I,J,K);
+    move(X,Y,Z, command_line);
 
     return letters_used;
 
 }
 
 
-void CNCSetup::move(double newX, double newY, double newZ, double i, double j, double k)
+void CNCSetup::move(double X, double Y, double Z, std::vector< GCodeCommand>& command_line)
 {
+    switch( motionType )
+    {
+        case MotionTypeEnum::RapidPositioning :
+            linearMove(X,Y,Z,command_line);       
+            break;
+        case MotionTypeEnum::LinearInterpolation :
+            linearMove(X,Y,Z,command_line);       
+            break;
+        case MotionTypeEnum::CircularInterpolationClockwise :
+            arcMove(X,Y,Z,command_line);       
+            break;
+        case MotionTypeEnum::CircularInterpolationCounterClockwise :
+            arcMove(X,Y,Z,command_line);       
+            break;
+
+    }
+}
+
+void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< GCodeCommand>& command_line)
+{
+    int A = 0;
+    int B = 0;
+    int C = 0;
+    int U = 0;
+    int V = 0;
+    int W = 0;
+
+    int commandLineSize = command_line.size();
+    for( int i = 0; i < commandLineSize; i++)
+    {
+        if(command_line[i].getCommandType() == 'A')
+        {
+            A = command_line[i].getCommandValue();
+            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
+            i--;
+            commandLineSize--;
+        }else
+
+        if(command_line[i].getCommandType() == 'B')
+        {
+            B = command_line[i].getCommandValue();
+            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
+            i--;
+            commandLineSize--;
+        }else
+
+        if(command_line[i].getCommandType() == 'C')
+        {
+            C = command_line[i].getCommandValue();
+            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
+            i--;
+            commandLineSize--;
+        }else
+        
+        if(command_line[i].getCommandType() == 'U')
+        {
+            U = command_line[i].getCommandValue();
+            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
+            i--;
+            commandLineSize--;
+        }else
+
+        if(command_line[i].getCommandType() == 'V')
+        {
+            V = command_line[i].getCommandValue();
+            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
+            i--;
+            commandLineSize--;
+        }else
+
+        if(command_line[i].getCommandType() == 'W')
+        {
+            W = command_line[i].getCommandValue();
+            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
+            i--;
+            commandLineSize--;
+        }
+    }
+
     double currentX = absolutePosX;
     double currentY = absolutePosY;
     double currentZ = absolutePosZ;
@@ -465,16 +507,110 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
                     break;
             }
             break;
-        case MotionTypeEnum::CircularInterpolationClockwise :
-
-            break;
-        case MotionTypeEnum::CircularInterpolationCounterClockwise :
-
-            break;
-
     }
 
+}
+
+
+void CNCSetup::arcMove( double X, double Y, double Z, std::vector< GCodeCommand>& command_line)
+{
+    double X0 = this->absolutePosX;
+    double Y0 = this->absolutePosY;
+    double Z0 = this->absolutePosZ;
+
+    int I = 0;
+    int J = 0;
+    int K = 0;
+    int R = 0;
+
+    bool isGivenR = false;
+
+    int commandLineSize = command_line.size();
+    for( int i = 0; i < commandLineSize; i++)
+    {
+        if(command_line[i].getCommandType() == 'I')
+        {
+            I = command_line[i].getCommandValue();
+            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
+            i--;
+            commandLineSize--;
+        }else
+
+        if(command_line[i].getCommandType() == 'J')
+        {
+            J = command_line[i].getCommandValue();
+            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
+            i--;
+            commandLineSize--;
+        }else
+
+        if(command_line[i].getCommandType() == 'K')
+        {
+            K = command_line[i].getCommandValue();
+            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
+            i--;
+            commandLineSize--;
+        }else
+        
+        if(command_line[i].getCommandType() == 'R')
+        {
+            R = command_line[i].getCommandValue();
+            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
+            i--;
+            commandLineSize--;
+            isGivenR = true;
+        }    
+    }
+
+    if( isGivenR == true)
+    {
+        // CALCULATE I, J, K given R
+        std::cout << "R parameter for arc has been given, calculating..." << std::endl;
+    }
+
+    switch( arcDistanceMode )
+    {
+        case ArcDistanceMode::absolute :
+            arcMoveTo( X, Y, Z, I, J, K );
+            break;
+        case ArcDistanceMode::incremental :
+            arcMoveTo( X0+X, Y0+Y, Z0+Z, I, J, K );
+            break;
+    }
+}
+
+void CNCSetup::arcMoveTo( double absoluteX, double absoluteY, double absoluteZ, double I, double J, double K)
+{
+
+    double X0 = this->absolutePosX;
+    double Y0 = this->absolutePosY;
+    double Z0 = this->absolutePosZ;
+
+    double X1 = absoluteX;
+    double Y1 = absoluteY;
+    double Z1 = absoluteZ;
+
+    double Xc = I;
+    double Yc = J;
+    double Zc = K;
     
+
+    switch(motionPlane)
+    {
+        case MotionPlane::XY :
+
+            break;
+        case MotionPlane::YZ :
+
+            break;
+
+        case MotionPlane::XZ :
+
+            break;
+    }
+    
+
+
 
 }
 

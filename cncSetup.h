@@ -67,10 +67,14 @@ class CNCSetup
         void setZAxisMotor( StepperMotor& xAxisMotor );
         void setSpindle( Spindle& spindle );
 
-        void move(double x, double y, double z, double i, double j, double k);
+        void move(double x, double y, double z, std::vector< GCodeCommand >& command_line);
+
+        void linearMove( double X, double Y, double Z, std::vector< GCodeCommand>& command_line);
         void feedrateMoveBy(double feedrate, double deltaX, double deltaY, double deltaZ);
         void rotate(StepperMotor& motor, double mmDistance, double axisFeedrate);
 
+        void arcMove( double X, double Y, double Z, std::vector< GCodeCommand>& command_line);
+        void arcMoveTo( double X, double Y, double Z, double I, double J, double K);
 
         void run( GCodeFile &gcodeFile );
         int execute( std::vector< GCodeCommand >& command_line );
