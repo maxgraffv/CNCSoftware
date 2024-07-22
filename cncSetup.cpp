@@ -22,8 +22,12 @@ CNCSetup::CNCSetup(
         Spindle& spindle, Units units = Units::milimeter) 
         : xAxisMotor(xAxisMotor), yAxisMotor1(yAxisMotor1),
             yAxisMotor2(yAxisMotor2), zAxisMotor(zAxisMotor),
-            spindle(spindle), units(units), absolutePosX(0), absolutePosY(0), absolutePosZ(0), currentTool(0)
+            spindle(spindle), units(units),
+             absolutePosX(0), absolutePosY(0), absolutePosZ(0), currentTool(0)
 {
+    feedRateMax = 3000;
+
+
 
 }
 
@@ -430,10 +434,10 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
                     deltaY = newY - currentY;
                     deltaZ = newZ - currentZ;
 
-                    // rapidMoveBy(deltaX, deltaY, deltaZ);
+                    feedrateMoveBy(feedRateMax,deltaX, deltaY, deltaZ);
                     break;
                 case DistanceMode::incrementalDistance :
-                    // rapidMoveBy(newX, newY, newZ);
+                    feedrateMoveBy(feedRateMax, newX, newY, newZ);
                     break;
             }
             break;
@@ -446,7 +450,7 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
                     deltaY = newY - currentY;
                     deltaZ = newZ - currentZ;
 
-                    feedrateMoveBy(deltaX, deltaY, deltaZ);
+                    feedrateMoveBy(this->feedRate,deltaX, deltaY, deltaZ);
 
                     absolutePosX += deltaX;
                     absolutePosY += deltaY;
@@ -454,7 +458,7 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
 
                     break;
                 case DistanceMode::incrementalDistance :
-                    feedrateMoveBy(newX, newY, newZ);
+                    feedrateMoveBy(this->feedRate, newX, newY, newZ);
                     absolutePosX = newX;
                     absolutePosY = newY;
                     absolutePosZ = newZ;
@@ -474,7 +478,7 @@ void CNCSetup::move(double newX, double newY, double newZ, double i, double j, d
 
 }
 
-void CNCSetup::feedrateMoveBy(double deltaX, double deltaY, double deltaZ)
+void CNCSetup::feedrateMoveBy(double feedrate, double deltaX, double deltaY, double deltaZ)
 {
     double deltaD = sqrt( pow(deltaX , 2) + pow(deltaY, 2) +  pow(deltaZ, 2));
 
@@ -482,11 +486,7 @@ void CNCSetup::feedrateMoveBy(double deltaX, double deltaY, double deltaZ)
     double YtoD = deltaY/deltaD;
     double ZtoD = deltaZ/deltaD;
 
-    std::cout << "x/d " << XtoD << std::endl;
-    std::cout << "y/d " << YtoD << std::endl;
-    std::cout << "z/d " << ZtoD << std::endl;
-
-    double feedrateD = this->feedRate;
+    double feedrateD = feedrate;
 
     double feedrateX = abs( XtoD*feedrateD );
     double feedrateY = abs( YtoD*feedrateD );
@@ -518,28 +518,28 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
     }
 
     double microstepsPerRevolution = 200* static_cast<int>(motor.getMicrosteps());
-    std::cout << "motor id " << motor.getId() << " msteps/rev: " << microstepsPerRevolution << std::endl;
+    // std::cout << "motor id " << motor.getId() << " msteps/rev: " << microstepsPerRevolution << std::endl;
     double revolutionsNeeded = mmDistance/motor.getLinearStep();
-    std::cout << "motor id " << motor.getId() << " revs needed: " << revolutionsNeeded << std::endl;
+    // std::cout << "motor id " << motor.getId() << " revs needed: " << revolutionsNeeded << std::endl;
     int microstepsNeeded = static_cast<int>( revolutionsNeeded*microstepsPerRevolution );
-    std::cout << "motor id " << motor.getId() << " msteps needed: " << microstepsNeeded << std::endl;
+    // std::cout << "motor id " << motor.getId() << " msteps needed: " << microstepsNeeded << std::endl;
 
     double mmPerMicrostep = motor.getLinearStep()/microstepsPerRevolution; //mm/microstep
-    std::cout << "motor id " << motor.getId() << " mm/mstep: " << mmPerMicrostep << std::endl;
+    // std::cout << "motor id " << motor.getId() << " mm/mstep: " << mmPerMicrostep << std::endl;
     double feedratePerMicrosec = axisFeedrate/60/1000000; // mm/microsec
-    std::cout << "motor id " << motor.getId() << " f-rate/msec: " << feedratePerMicrosec << std::endl;
+    // std::cout << "motor id " << motor.getId() << " f-rate/msec: " << feedratePerMicrosec << std::endl;
 
     double microsecsPerMicrostep = mmPerMicrostep / feedratePerMicrosec;
 
-    std::cout << "motor id " << motor.getId() << " msec/mstep: " << microsecsPerMicrostep << std::endl;
+    // std::cout << "motor id " << motor.getId() << " msec/mstep: " << microsecsPerMicrostep << std::endl;
 
     motor.setStepDelayMicrosec( static_cast<int>( microsecsPerMicrostep/2 ));
 
-    std::cout << "step going...";
+    // std::cout << "step going...";
     for(int i = 0; i < microstepsNeeded; i++)
         motor.step();
 
-    std::cout << " step done."<<std::endl;
+    // std::cout << " step done."<<std::endl;
 
     motor.setDirection( MotorRotationDirection::CLOCKWISE );
 

@@ -34,6 +34,7 @@ class CNCSetup
         double absolutePosZ;
 
         double feedRate;
+        double feedRateMax;
         Tool currentTool;
 
         MotionTypeEnum motionType;
@@ -67,7 +68,7 @@ class CNCSetup
         void setSpindle( Spindle& spindle );
 
         void move(double x, double y, double z, double i, double j, double k);
-        void feedrateMoveBy(double deltaX, double deltaY, double deltaZ);
+        void feedrateMoveBy(double feedrate, double deltaX, double deltaY, double deltaZ);
         void rotate(StepperMotor& motor, double mmDistance, double axisFeedrate);
 
 
