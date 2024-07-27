@@ -16,6 +16,8 @@
 #include "pathMode.h"
 #include <thread>
 #include <functional>
+#include "CoordinateSystem.h"
+#include <set>
 
 
 class CNCSetup
@@ -32,6 +34,10 @@ class CNCSetup
         double absolutePosX;
         double absolutePosY;
         double absolutePosZ;
+        CoordinateSystem currentCoordinates;
+
+        CoordinateSystem machineCoordinates;
+        std::set< CoordinateSystem > coordinateSystems_set;
 
         double feedRate;
         double feedRateMax;
@@ -124,6 +130,8 @@ class CNCSetup
         double getToolLengthOffset();
 
         int toolChange();
+
+        void setCurrentCoordinateSystem( double coordinateSystemId );
 
 
 };

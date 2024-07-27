@@ -12,6 +12,7 @@
 #include "Tool.h"
 #include <thread>
 #include <functional>
+#include "CoordinateSystem.h"
 
 
 
@@ -23,30 +24,21 @@ CNCSetup::CNCSetup(
         : xAxisMotor(xAxisMotor), yAxisMotor1(yAxisMotor1),
             yAxisMotor2(yAxisMotor2), zAxisMotor(zAxisMotor),
             spindle(spindle), units(units),
-             absolutePosX(0), absolutePosY(0), absolutePosZ(0), currentTool(0)
+            absolutePosX(0), absolutePosY(0), absolutePosZ(0), currentTool(0), 
+            machineCoordinates(CoordinateSystem(53, 0,0,0)), currentCoordinates(machineCoordinates)
 {
     feedRateMax = 3000;
-
-
-
+    coordinateSystems_set.insert( machineCoordinates );
 }
-
 
 void CNCSetup::run( GCodeFile &gcodeFile )
 {
-
-
     std::vector< std::vector< GCodeCommand> > command_vec 
         = gcodeFile.getCommand_vec();
-
 
     for( int i = 0; i < command_vec.size(); i++ )
     {
         process( command_vec[i] );
-
-
-
-
     }
 
     // for( int i = 0; i < command_vec.size(); i++)
@@ -170,20 +162,14 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
                 letters_used = CNCSetup::setToolLengthOffset( command_line );
             else if( command.getCommandValue() == 49 )
                 CNCSetup::cancelToolLengthOffset();
-            // else if( command.getCommandValue() == 53 )
-            //     CNCSetup::moveInMachineCoordinateSystem();
-            // else if( command.getCommandValue() == 54 )
-            //     CNCSetup::usePresetWorkCoordinateSys1();
-            // else if( command.getCommandValue() == 55 )
-            //     CNCSetup::usePresetWorkCoordinateSys2();
-            // else if( command.getCommandValue() == 56 )
-            //     CNCSetup::usePresetWorkCoordinateSys3();
-            // else if( command.getCommandValue() == 57 )
-            //     CNCSetup::usePresetWorkCoordinateSys4();
-            // else if( command.getCommandValue() == 58 )
-            //     CNCSetup::usePresetWorkCoordinateSys5();
-            // else if( command.getCommandValue() == 59 )
-            //     CNCSetup::usePresetWorkCoordinateSys6();
+
+            else if( command.getCommandValue() == 53 )
+                CNCSetup::setCurrentCoordinateSystem( 53 );
+
+            else if( command.getCommandValue() >=54 && command.getCommandValue() < 60 )
+                CNCSetup::setCurrentCoordinateSystem( command.getCommandValue() );
+
+
             else if( command.getCommandValue() == 61 )
                 CNCSetup::setPathMode( PathMode::Exact, command_line );
             else if( command.getCommandValue() == 61.1 )
@@ -310,9 +296,6 @@ double CNCSetup::getFeedRate()
     return feedRate;
 }
 
-
-
-
 bool containsCodeType(std::vector< GCodeCommand > command_vec, char c)
 {
     bool contains = false;
@@ -322,9 +305,6 @@ bool containsCodeType(std::vector< GCodeCommand > command_vec, char c)
 
     return contains;
 }
-
-
-
 
 int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand>& command_line )
 {
@@ -376,7 +356,6 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
 
 }
 
-
 void CNCSetup::move(double X, double Y, double Z, std::vector< GCodeCommand>& command_line)
 {
     switch( motionType )
@@ -393,7 +372,6 @@ void CNCSetup::move(double X, double Y, double Z, std::vector< GCodeCommand>& co
         case MotionTypeEnum::CircularInterpolationCounterClockwise :
             arcMove(X,Y,Z,command_line);       
             break;
-
     }
 }
 
@@ -458,9 +436,9 @@ void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< G
         }
     }
 
-    double currentX = absolutePosX;
-    double currentY = absolutePosY;
-    double currentZ = absolutePosZ;
+    double currentX = absolutePosX - currentCoordinates.offsetX;
+    double currentY = absolutePosY - currentCoordinates.offsetY;
+    double currentZ = absolutePosZ - currentCoordinates.offsetZ;
 
     double deltaX = 0;
     double deltaY = 0;
@@ -511,12 +489,11 @@ void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< G
 
 }
 
-
 void CNCSetup::arcMove( double X, double Y, double Z, std::vector< GCodeCommand>& command_line)
 {
-    double X0 = this->absolutePosX;
-    double Y0 = this->absolutePosY;
-    double Z0 = this->absolutePosZ;
+    double X0 = this->absolutePosX - currentCoordinates.offsetX;
+    double Y0 = this->absolutePosY - currentCoordinates.offsetY;
+    double Z0 = this->absolutePosZ - currentCoordinates.offsetZ;
 
     int I = 0;
     int J = 0;
@@ -681,7 +658,6 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
 
 }
 
-
 int CNCSetup::programStop()
 {
     std::cout << "Program Stopping..." << std::endl;
@@ -799,8 +775,10 @@ int CNCSetup::setPathMode( PathMode pathMode, std::vector< GCodeCommand >& comma
 
 }
 
-PathMode getPathMode();
-
+PathMode CNCSetup::getPathMode()
+{
+    return pathMode;
+}
 
 int CNCSetup::setNewTool( double newToolId )
 {
@@ -858,6 +836,7 @@ int CNCSetup::setSpindleSpeed( double speed)
     std::cout << "spindle speed set to " << this->spindleSpeed << std::endl;
     return 0;
 }
+
 double CNCSetup::getSpindleSpeed()
 {
     return spindleSpeed;
@@ -889,4 +868,37 @@ int CNCSetup::cancelToolLengthOffset()
 double CNCSetup::getToolLengthOffset()
 {
     return this->toolLengthOffset;
+}
+
+void CNCSetup::setCurrentCoordinateSystem( double coordinateSystemId)
+{
+    bool containsSystem = false;
+    for(auto it = coordinateSystems_set.begin(); it != coordinateSystems_set.end(); it++)
+    {
+        if( it->Id == coordinateSystemId )
+        {
+            containsSystem = true;
+            currentCoordinates = *it;
+            break;
+        }
+    }
+
+    if( !containsSystem )
+    {
+        double newOffsetX = 0;
+        double newOffsetY = 0;
+        double newOffsetZ = 0;
+
+        std::cout << "New Coordinate System is being created..." << std::endl;
+        std::cout << "Coordinate System "<< coordinateSystemId << std::endl;
+        std::cout << "insert Offset X: "; std::cin >> newOffsetX; std::cout << std::endl;
+        std::cout << "insert Offset Y: "; std::cin >> newOffsetY; std::cout << std::endl;
+        std::cout << "insert Offset Z: "; std::cin >> newOffsetZ; std::cout << std::endl;
+        
+        CoordinateSystem newCoordinateSystem( coordinateSystemId, newOffsetX, newOffsetY, newOffsetZ );
+
+        coordinateSystems_set.insert(newCoordinateSystem);
+
+        currentCoordinates = newCoordinateSystem;
+    }
 }
