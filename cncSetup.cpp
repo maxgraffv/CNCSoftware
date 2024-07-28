@@ -13,7 +13,7 @@
 #include <thread>
 #include <functional>
 #include "CoordinateSystem.h"
-
+#include "arcPathGenerator.h"
 
 
 
@@ -479,9 +479,9 @@ void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< G
                     break;
                 case DistanceMode::incrementalDistance :
                     feedrateMoveBy(this->feedRate, newX, newY, newZ);
-                    absolutePosX = newX;
-                    absolutePosY = newY;
-                    absolutePosZ = newZ;
+                    absolutePosX += newX;
+                    absolutePosY += newY;
+                    absolutePosZ += newZ;
                     break;
             }
             break;
@@ -545,48 +545,54 @@ void CNCSetup::arcMove( double X, double Y, double Z, std::vector< GCodeCommand>
         std::cout << "R parameter for arc has been given, calculating..." << std::endl;
     }
 
-    switch( arcDistanceMode )
-    {
-        case ArcDistanceMode::absolute :
-            arcMoveTo( X, Y, Z, I, J, K );
-            break;
-        case ArcDistanceMode::incremental :
-            arcMoveTo( X0+X, Y0+Y, Z0+Z, I, J, K );
-            break;
-    }
+    arcMoveTo( X, Y, Z, I, J, K );
 }
 
-void CNCSetup::arcMoveTo( double absoluteX, double absoluteY, double absoluteZ, double I, double J, double K)
+void CNCSetup::arcMoveTo( double absoluteFinalX, double absoluteFinalY, double absoluteFinalZ, double I, double J, double K)
 {
 
-    double X0 = this->absolutePosX;
-    double Y0 = this->absolutePosY;
-    double Z0 = this->absolutePosZ;
+    std::vector<ArcPath::Point> arc_vec;
 
-    double X1 = absoluteX;
-    double Y1 = absoluteY;
-    double Z1 = absoluteZ;
-
-    double Xc = I;
-    double Yc = J;
-    double Zc = K;
-    
-
-    switch(motionPlane)
+    switch (getMotionType())
     {
-        case MotionPlane::XY :
-
-            break;
-        case MotionPlane::YZ :
-
-            break;
-
-        case MotionPlane::XZ :
-
-            break;
-    }
+    case MotionTypeEnum::CircularInterpolationClockwise :
+        arc_vec = ArcPath::generate( 
+            absolutePosX, absolutePosY, absolutePosZ, 
+            absoluteFinalX, absoluteFinalY, absoluteFinalZ,
+            I, J, K, CNCSetup::getMotionPlane(), true,
+            getArcDistanceMode(), getDistanceMode()
+        );
+        break;
     
+    case MotionTypeEnum::CircularInterpolationCounterClockwise :
+        arc_vec = ArcPath::generate( 
+            absolutePosX, absolutePosY, absolutePosZ, 
+            absoluteFinalX, absoluteFinalY, absoluteFinalZ,
+            I, J, K, CNCSetup::getMotionPlane(), false,
+            getArcDistanceMode(), getDistanceMode()
+        );
+        break;
+    }
 
+
+    double delta_x = 0;
+    double delta_y = 0;
+    double delta_z = 0;
+
+    for(int i = 0; i < arc_vec.size(); i++)
+    {
+        
+        delta_x = arc_vec[i].x - (absolutePosX - currentCoordinates.offsetX);
+        delta_y = arc_vec[i].y - (absolutePosY - currentCoordinates.offsetY);
+        delta_z = arc_vec[i].z - (absolutePosZ - currentCoordinates.offsetZ);
+
+        feedrateMoveBy( getFeedRate(), delta_x, delta_y, delta_z );
+
+        absolutePosX += delta_x;
+        absolutePosY += delta_y;
+        absolutePosZ += delta_z;
+
+    }
 
 
 }
