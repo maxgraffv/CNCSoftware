@@ -550,7 +550,6 @@ void CNCSetup::arcMove( double X, double Y, double Z, std::vector< GCodeCommand>
 
 void CNCSetup::arcMoveTo( double absoluteFinalX, double absoluteFinalY, double absoluteFinalZ, double I, double J, double K)
 {
-
     std::vector<ArcPath::Point> arc_vec;
 
     switch (getMotionType())
@@ -574,7 +573,6 @@ void CNCSetup::arcMoveTo( double absoluteFinalX, double absoluteFinalY, double a
         break;
     }
 
-
     double delta_x = 0;
     double delta_y = 0;
     double delta_z = 0;
@@ -593,8 +591,6 @@ void CNCSetup::arcMoveTo( double absoluteFinalX, double absoluteFinalY, double a
         absolutePosZ += delta_z;
 
     }
-
-
 }
 
 void CNCSetup::feedrateMoveBy(double feedrate, double deltaX, double deltaY, double deltaZ)
