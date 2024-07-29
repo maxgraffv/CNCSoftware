@@ -23,14 +23,6 @@ dtoverlay=pi3-disable-bt
 sudo reboot
 */
 
-void runMotor(StepperMotor& motor)
-{
-    motor.setStepDelayMicrosec(100);
-    for(int i = 0; i < 32000; i++)
-        motor.step();
-}
-
-
 int main()
 {
 

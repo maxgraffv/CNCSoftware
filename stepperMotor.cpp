@@ -1,6 +1,4 @@
 #include "stepperMotor.h"
-
-#include <wiringPi.h>
 #include "MotorRotationDirectionEnum.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -81,7 +79,7 @@ void StepperMotor::setMicrosteps( MicrostepResolution microsteps)
             break;
     }
     this->microstepResolution = microsteps;
-    std::cout << "Stepper Motor "<<getId() << ": microstep resolution set to " << static_cast<int>( microsteps ) << std::endl;
+    // std::cout << "Stepper Motor "<<getId() << ": microstep resolution set to " << static_cast<int>( microsteps ) << std::endl;
 }
 
 MicrostepResolution StepperMotor::getMicrosteps()
@@ -94,12 +92,12 @@ void StepperMotor::setDirection( MotorRotationDirection direction)
     if( direction == MotorRotationDirection::CLOCKWISE)
     {
         digitalWrite(dir_pin, HIGH);
-        std::cout << "Stepper Motor Direction Set Clockwise" << std::endl;
+        // std::cout << "Stepper Motor Direction Set Clockwise" << std::endl;
     }
     else if( direction == MotorRotationDirection::ANTICLOCKWISE)
     {
         digitalWrite(dir_pin, LOW);
-        std::cout << "Stepper Motor Direction Set Counter Clockwise" << std::endl;
+        // std::cout << "Stepper Motor Direction Set Counter Clockwise" << std::endl;
     }
 }
 

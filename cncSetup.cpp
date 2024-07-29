@@ -25,10 +25,11 @@ CNCSetup::CNCSetup(
             yAxisMotor2(yAxisMotor2), zAxisMotor(zAxisMotor),
             spindle(spindle), units(units),
             absolutePosX(0), absolutePosY(0), absolutePosZ(0), currentTool(0), 
-            machineCoordinates(CoordinateSystem(53, 0,0,0)), currentCoordinates(machineCoordinates)
+            machineCoordinates(CoordinateSystem(53, 0,0,0)), currentCoordinates( CoordinateSystem(53, 0,0,0) )
 {
     feedRateMax = 3000;
     coordinateSystems_set.insert( machineCoordinates );
+    currentCoordinates = machineCoordinates;
 }
 
 void CNCSetup::run( GCodeFile &gcodeFile )
@@ -617,10 +618,10 @@ void CNCSetup::feedrateMoveBy(double feedrate, double deltaX, double deltaY, dou
     t3.join();
     t4.join();
 
-    std::cout << "Moved in MotionType: " << (int)CNCSetup::getMotionType() 
-    << " by X: " << deltaX << " Y: "<< deltaY << " Z: " << deltaZ << std::endl;
-    std::cout << "FR x: " << feedrateX << " y: " << feedrateY << " z: " << feedrateZ << std::endl;
-
+    // std::cout << "Moved in MotionType: " << (int)CNCSetup::getMotionType() 
+    // << " by X: " << deltaX << " Y: "<< deltaY << " Z: " << deltaZ << std::endl;
+    // std::cout << "FR x: " << feedrateX << " y: " << feedrateY << " z: " << feedrateZ << std::endl;
+    std::cout << "x: " << absolutePosX << "\ty: " << absolutePosY << "\tz: " << absolutePosZ << std::endl;
 
 }
 

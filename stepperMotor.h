@@ -5,7 +5,12 @@
 #include "motor.h"
 #include "microstepResolutionEnum.h"
 
-#include <wiringPi.h>
+#ifdef __APPLE__
+    #include "wiringMac.h"
+#else
+    #include <wiringPi.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
