@@ -3,12 +3,12 @@
 
 Spindle::Spindle( int pwm_pin, int dir_pin):pwm_pin(pwm_pin), dir_pin(dir_pin)
 {
-    std::cout << "Spindle created id: " << getId() << std::endl;
+    // std::cout << "Spindle created id: " << getId() << std::endl;
 }
 
 Spindle::~Spindle()
 {
-    std::cout << "Spindle destroyed id: " << getId() << std::endl;
+    // std::cout << "Spindle destroyed id: " << getId() << std::endl;
 }
 
 void Spindle::setSpeed(double speed)
