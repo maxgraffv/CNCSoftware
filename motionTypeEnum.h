@@ -4,8 +4,8 @@
 enum class MotionTypeEnum
 {
     RapidPositioning = 0, LinearInterpolation = 1, 
-    CircularInterpolationClockwise = 3,
-    CircularInterpolationCounterClockwise = 4
+    CircularInterpolationClockwise = 2,
+    CircularInterpolationCounterClockwise = 3
 };
 
 
