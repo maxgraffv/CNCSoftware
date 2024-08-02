@@ -24,3 +24,23 @@ void pullUpDnControl(int a, int b)
 {
 
 }
+
+void pwmSetMode(int val)
+{
+
+}
+
+void pwmSetRange(int val)
+{
+
+}
+
+void pwmSetClock(int val)
+{
+
+}
+
+void pwmWrite(int pwm_pin,int val)
+{
+    
+}
