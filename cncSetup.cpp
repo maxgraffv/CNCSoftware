@@ -14,10 +14,8 @@
 #include <functional>
 #include "CoordinateSystem.h"
 #include "arcPathGenerator.h"
+#include "wiringMac.h"
 
-#define PUD_OFF 0
-#define PUD_DOWN 1
-#define PUD_UP 2
 
 
 
@@ -87,7 +85,7 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
     switch(command.getCommandType())
     {
         case 'N':
-            std::cout << "Code Line: " << command.getCommandValue() << std::endl;
+            // std::cout << "Code Line: " << command.getCommandValue() << std::endl;
             break;
         case 'G':
             if( command.getCommandValue() == 0 )

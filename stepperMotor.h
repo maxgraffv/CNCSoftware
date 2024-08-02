@@ -15,10 +15,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define OUTPUT 1
-#define INPUT 0
-#define LOW 0
-#define HIGH 1
 
 
 class StepperMotor : public Motor
