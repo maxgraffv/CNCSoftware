@@ -19,3 +19,8 @@ void delayMicroseconds(double microsec)
 {
 
 }
+
+void pullUpDnControl(int a, int b)
+{
+
+}
