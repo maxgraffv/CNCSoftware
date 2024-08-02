@@ -87,6 +87,8 @@ class CNCSetup
 
         void process( std::vector< GCodeCommand >& command_line );
 
+        void home();
+
         int programPause();
         int programStop();
 

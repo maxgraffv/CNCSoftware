@@ -4,6 +4,7 @@
 #include "arcDistanceMode.h"
 #include "distanceMode.h"
 #include <cmath>
+#include <iostream>
 
 
 std::vector<ArcPath::Point> ArcPath::generate(  double start_x, double start_y, double start_z,
@@ -51,23 +52,30 @@ std::vector<ArcPath::Point> ArcPath::generate(  double start_x, double start_y, 
             break;
     }
 
-    double radius = std::sqrt( i*i + j*j + k*k );
+    double dx = abs( center_x - end_x );
+    double dy = abs( center_y - end_y );
+    double dz = abs( center_z - end_z );
+
+    double radius = 0;
     double startAngle = 0;
     double endAngle = 0;
 
     switch (plane)
     {
         case MotionPlane::XY :
+            radius = std::sqrt( dx*dx + dy*dy );
             startAngle = std::atan2( start_y - center_y, start_x - center_x );
             endAngle = std::atan2( end_y - center_y, end_x - center_x );
             break;
 
         case MotionPlane::XZ :
+            radius = std::sqrt( dx*dx + dz*dz );
             startAngle = std::atan2( start_z - center_z, start_x - center_x );
             endAngle = std::atan2( end_z - center_z, end_x - center_x );
             break;    
 
         case MotionPlane::YZ :
+            radius = std::sqrt( dy*dy + dz*dz );
             startAngle = std::atan2( start_z - center_z, start_y - center_y );
             endAngle = std::atan2( end_z - center_z, end_y - center_y );
             break;
@@ -76,18 +84,35 @@ std::vector<ArcPath::Point> ArcPath::generate(  double start_x, double start_y, 
             break;
     }
 
-    if(clockwise)
-        if( startAngle < endAngle )
-            startAngle += 2*PI;
-    else
+    std::cout << "RADIUS: " << radius << std::endl;
+
+    if(!clockwise)
+    {
         if( startAngle > endAngle )
             startAngle -= 2*PI;
+    }
+    else
+    {
+        if( startAngle < endAngle )
+        {
+            endAngle -= 2*PI;
+        }
+        else
+        {
+        }
+    }
+        
 
 
     double angle = abs( endAngle - startAngle );
     double partOfCircle = angle/(2*PI);
     double pathLength = (2*PI*radius)*partOfCircle;
-    int resolution = static_cast<int>( pathLength/0.01 );
+    int resolution = static_cast<int>( pathLength/0.1 );
+    if((resolution - 1) == 0)
+    {
+        // std::cout << "ERROR HUGE F" << std::endl;
+        resolution += 1;
+    }
 
     double angleStep = (endAngle - startAngle) / resolution;
 

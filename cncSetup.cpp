@@ -15,6 +15,11 @@
 #include "CoordinateSystem.h"
 #include "arcPathGenerator.h"
 
+#define PUD_OFF 0
+#define PUD_DOWN 1
+#define PUD_UP 2
+
+
 
 
 CNCSetup::CNCSetup( 
@@ -24,7 +29,9 @@ CNCSetup::CNCSetup(
         : xAxisMotor(xAxisMotor), yAxisMotor1(yAxisMotor1),
             yAxisMotor2(yAxisMotor2), zAxisMotor(zAxisMotor),
             spindle(spindle), units(units),
-            absolutePosX(0), absolutePosY(0), absolutePosZ(0), currentTool(0), 
+            absolutePosX(0), absolutePosY(0), absolutePosZ(0), 
+            arcDistanceMode(ArcDistanceMode::incremental),
+            currentTool(0), 
             machineCoordinates(CoordinateSystem(53, 0,0,0)), currentCoordinates( CoordinateSystem(53, 0,0,0) )
 {
     feedRateMax = 3000;
@@ -139,6 +146,7 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
             // else if( command.getCommandValue() == 42 )
             //     CNCSetup::toolRadiusCompensationRight();
             // else if( command.getCommandValue() == 43 )
+
             // else if( command.getCommandValue() == 18 )
             //     CNCSetup::selectXZPlane();
             // else if( command.getCommandValue() == 19 )
@@ -310,13 +318,13 @@ bool containsCodeType(std::vector< GCodeCommand > command_vec, char c)
 int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand>& command_line )
 {
     int letters_used = 0;
-    double X = 0;
-    double Y = 0;
-    double Z = 0;
+    double X = absolutePosX - currentCoordinates.offsetX;
+    double Y = absolutePosY - currentCoordinates.offsetY;
+    double Z = absolutePosZ - currentCoordinates.offsetZ;
 
     int commandLineSize = command_line.size();
     this->motionType = motionType;
-    std::cout << "motion type set to " << static_cast<int>(this->motionType) << std::endl;
+    // std::cout << "motion type set to " << static_cast<int>(this->motionType) << std::endl;
     for( int i = 0; i < commandLineSize; i++)
     {
         if(command_line[i].getCommandType() == 'X')
@@ -326,7 +334,7 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
             letters_used++;
             i--;
             commandLineSize--;
-            std::cout << "X";
+            // std::cout << "X";
         }else
 
         if(command_line[i].getCommandType() == 'Y')
@@ -336,7 +344,7 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
             letters_used++;
             i--;
             commandLineSize--;
-            std::cout << "Y";
+            // std::cout << "Y";
         }else
 
         if(command_line[i].getCommandType() == 'Z')
@@ -346,7 +354,7 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
             letters_used++;
             i--;
             commandLineSize--;
-            std::cout << "Z";
+            // std::cout << "Z";
 
         }
     }
@@ -456,9 +464,15 @@ void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< G
                     deltaZ = newZ - currentZ;
 
                     feedrateMoveBy(feedRateMax,deltaX, deltaY, deltaZ);
+                    absolutePosX += deltaX;
+                    absolutePosY += deltaY;
+                    absolutePosZ += deltaZ;
                     break;
                 case DistanceMode::incrementalDistance :
                     feedrateMoveBy(feedRateMax, newX, newY, newZ);
+                    absolutePosX += newX;
+                    absolutePosY += newY;
+                    absolutePosZ += newZ;
                     break;
             }
             break;
@@ -492,9 +506,6 @@ void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< G
 
 void CNCSetup::arcMove( double X, double Y, double Z, std::vector< GCodeCommand>& command_line)
 {
-    double X0 = this->absolutePosX - currentCoordinates.offsetX;
-    double Y0 = this->absolutePosY - currentCoordinates.offsetY;
-    double Z0 = this->absolutePosZ - currentCoordinates.offsetZ;
 
     int I = 0;
     int J = 0;
@@ -553,11 +564,15 @@ void CNCSetup::arcMoveTo( double absoluteFinalX, double absoluteFinalY, double a
 {
     std::vector<ArcPath::Point> arc_vec;
 
+    double X0 = this->absolutePosX - currentCoordinates.offsetX;
+    double Y0 = this->absolutePosY - currentCoordinates.offsetY;
+    double Z0 = this->absolutePosZ - currentCoordinates.offsetZ;
+
     switch (getMotionType())
     {
     case MotionTypeEnum::CircularInterpolationClockwise :
         arc_vec = ArcPath::generate( 
-            absolutePosX, absolutePosY, absolutePosZ, 
+            X0, Y0, Z0, 
             absoluteFinalX, absoluteFinalY, absoluteFinalZ,
             I, J, K, CNCSetup::getMotionPlane(), true,
             getArcDistanceMode(), getDistanceMode()
@@ -566,7 +581,7 @@ void CNCSetup::arcMoveTo( double absoluteFinalX, double absoluteFinalY, double a
     
     case MotionTypeEnum::CircularInterpolationCounterClockwise :
         arc_vec = ArcPath::generate( 
-            absolutePosX, absolutePosY, absolutePosZ, 
+            X0, Y0, Z0, 
             absoluteFinalX, absoluteFinalY, absoluteFinalZ,
             I, J, K, CNCSetup::getMotionPlane(), false,
             getArcDistanceMode(), getDistanceMode()
@@ -621,7 +636,7 @@ void CNCSetup::feedrateMoveBy(double feedrate, double deltaX, double deltaY, dou
     // std::cout << "Moved in MotionType: " << (int)CNCSetup::getMotionType() 
     // << " by X: " << deltaX << " Y: "<< deltaY << " Z: " << deltaZ << std::endl;
     // std::cout << "FR x: " << feedrateX << " y: " << feedrateY << " z: " << feedrateZ << std::endl;
-    std::cout << "x: " << absolutePosX << "\ty: " << absolutePosY << "\tz: " << absolutePosZ << std::endl;
+    std::cout << "x" << absolutePosX << "y" << absolutePosY << "z" << absolutePosZ << std::endl;
 
 }
 
@@ -897,6 +912,10 @@ void CNCSetup::setCurrentCoordinateSystem( double coordinateSystemId)
         std::cout << "insert Offset X: "; std::cin >> newOffsetX; std::cout << std::endl;
         std::cout << "insert Offset Y: "; std::cin >> newOffsetY; std::cout << std::endl;
         std::cout << "insert Offset Z: "; std::cin >> newOffsetZ; std::cout << std::endl;
+
+        // newOffsetX = 70;
+        // newOffsetY = 150;
+        // newOffsetZ = 120;
         
         CoordinateSystem newCoordinateSystem( coordinateSystemId, newOffsetX, newOffsetY, newOffsetZ );
 
@@ -904,4 +923,29 @@ void CNCSetup::setCurrentCoordinateSystem( double coordinateSystemId)
 
         currentCoordinates = newCoordinateSystem;
     }
+}
+
+
+
+void CNCSetup::home()
+{
+    // const int XAxisHomeSensor = 8;
+    // int x = 1;
+    // pinMode(XAxisHomeSensor, INPUT);
+    // pullUpDnControl(XAxisHomeSensor, PUD_DOWN);
+
+    // while( x != 0)
+    // {
+    //     xAxisMotor.step();
+    //     if( wiringPIISR(XAxisHomeSensor, INT_EDGE_RISING, x = 0 ) )
+    //     {
+    //         std::cerr << "ISR Failed" << std::endl;
+    //     }
+
+
+    // }
+
+
+
+
 }
