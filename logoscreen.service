@@ -1,0 +1,13 @@
+[Unit]
+Description=Splash screen
+DefaultDependencies=no
+After=local-fs.target
+
+[Service]
+ExecStart=/usr/bin/fbi -T 1 -noverbose -a /home/max/cnc-sw/CNCSoftware/logo.png
+StandardInput=tty
+StandardOutput=tty
+
+[Install]
+WantedBy=sysinit.target
+
