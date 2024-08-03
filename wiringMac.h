@@ -25,10 +25,9 @@ void digitalWrite(int a, int b);
 void delayMicroseconds(double microsec);
 void pullUpDnControl(int a, int b);
 
-void pwmSetMode(int val);   // Use mark-space mode
-void pwmSetRange(int val);         // Set the range (0 to 1023)
-void pwmSetClock(int val);           // Set the PWM frequency
-
+void pwmSetMode(int val); 
+void pwmSetRange(int val);
+void pwmSetClock(int val);
 void pwmWrite(int pwm_pin,int val);  
 
 
