@@ -930,6 +930,10 @@ void CNCSetup::setCurrentCoordinateSystem( double coordinateSystemId)
     }
 }
 
+void fakeFunc()
+{
+    std::cout << "ISR wow" << std::endl;
+}
 
 
 void CNCSetup::home()
@@ -942,7 +946,7 @@ void CNCSetup::home()
     while( x != 0)
     {
         rotate(xAxisMotor, 0.04, 8000);
-        if( wiringPiISR(limitSwitchX.getPin(), INT_EDGE_RISING, 1 ) )
+        if( wiringPiISR(limitSwitchX.getPin(), INT_EDGE_RISING, fakeFunc ) )
         {
             std::cerr << "ISR Failed" << std::endl;
         }
