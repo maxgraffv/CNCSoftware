@@ -101,6 +101,30 @@ void program( std::vector<std::string> args)
         std::cout << "current position Y: " << myCNC.getAbsolutePos()[1] << std::endl;
         std::cout << "current position Z: " << myCNC.getAbsolutePos()[2] << std::endl;
     }
+    if( args[0] == "moveby" )
+    {
+        
+    }
+    if( args[0] == "moveto" )
+    {
+        
+    }
+    if( args[0] == "home" )
+    {
+        myCNC.home();
+    }
+    if( args[0] == "help" )
+    {
+
+    }
+    if( args[0] == "set" )
+    {
+
+    }
+    if( args[0] == "mdi" )//manual data input
+    {
+
+    }
     if( args[0] == "quit" )
     {
         std::exit(0);
