@@ -12,7 +12,7 @@ echo ""
 echo ""
 
 echo -e "vim installing...\n"
-sudo apt install git
+sudo apt install vim
 echo ""
 echo ""
 
@@ -35,8 +35,8 @@ echo ""
 
 
 echo -e "splashscreen service...\n"
-sudo mv CNCSoftware/splashScreen/splashScreen.service /etc/systemd/system/
-sudo mv CNCSoftware/splashScreen/show_splash.sh /usr/local/bin/
+sudo mv ./CNCSoftware/splashScreen/splashScreen.service /etc/systemd/system/
+sudo mv ./CNCSoftware/splashScreen/show_splash.sh /usr/local/bin/
 sudo systemctl enable splashScreen.service
 echo ""
 echo ""
