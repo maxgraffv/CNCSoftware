@@ -35,7 +35,10 @@ echo ""
 
 
 echo -e "splashscreen service...\n"
+cd
+cd ~/CNCSoftware/
 git pull
+cd
 sudo mv ~/CNCSoftware/splashScreen/splashScreen.service /etc/systemd/system/
 sudo mv ~/CNCSoftware/splashScreen/show_splash.sh /usr/local/bin/
 sudo mv ~/CNCSoftware/splashScreen/logo.png /usr/local/share/
