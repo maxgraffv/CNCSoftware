@@ -12,6 +12,7 @@
 #include <functional>
 #include <stdexcept>
 #include <sstream>
+#include <cstdlib>
 
 /*
 FOR GPIO14 GPIO15 to work, UART has to be disabled
@@ -46,7 +47,7 @@ int main( int argc, char** argv )
     switch( argc )
     {
         case 1:
-            while( args[0] != "quit")
+            while(true)
             {
                 std::cout << "GraffOS ";
                 std::getline(std::cin, line); 
@@ -98,6 +99,11 @@ void program( std::vector<std::string> args)
         std::cout << "current position Y: " << myCNC.getAbsolutePos()[1] << std::endl;
         std::cout << "current position Z: " << myCNC.getAbsolutePos()[2] << std::endl;
     }
+    if( args[0] == "quit" )
+    {
+        std::exit(0);
+    }
+
     
 
 

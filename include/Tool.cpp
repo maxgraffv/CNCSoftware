@@ -4,7 +4,7 @@
 
 Tool::Tool( double toolId ):id(toolId)
 {
-    std::cout << "created tool " << id << std::endl;
+    // std::cout << "created tool " << id << std::endl;
 }
 
 double Tool::getToolId()
