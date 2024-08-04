@@ -942,7 +942,7 @@ void CNCSetup::home()
     while( x != 0)
     {
         rotate(xAxisMotor, 0.04, 8000);
-        if( wiringPiISR(limitSwitchX.getPin(), INT_EDGE_RISING, x = 0 ) )
+        if( wiringPiISR(limitSwitchX.getPin(), INT_EDGE_RISING, 1 ) )
         {
             std::cerr << "ISR Failed" << std::endl;
         }
