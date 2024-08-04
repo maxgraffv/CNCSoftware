@@ -1,13 +1,12 @@
 [Unit]
 Description=Splash screen
-DefaultDependencies=no
-After=local-fs.target
+After=network.target
 
 [Service]
-ExecStart=g++ /home/max/CNCSoftware/include/*.cpp -o /home/max/GraffOS -lwiringPi -std=c++20
+ExecStart=/home/max/CNCSoftware/OSCompile.sh
 StandardInput=tty
 StandardOutput=tty
 
 [Install]
-WantedBy=sysinit.target
+WantedBy=multi-user.target
 
