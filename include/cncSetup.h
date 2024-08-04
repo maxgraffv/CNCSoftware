@@ -84,6 +84,8 @@ class CNCSetup
         void setZAxisMotor( StepperMotor& xAxisMotor );
         void setSpindle( Spindle& spindle );
 
+        std::vector<double> getAbsolutePos();
+
         void move(double x, double y, double z, std::vector< GCodeCommand >& command_line);
 
         void linearMove( double X, double Y, double Z, std::vector< GCodeCommand>& command_line);

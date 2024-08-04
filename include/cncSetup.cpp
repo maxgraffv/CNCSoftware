@@ -310,6 +310,16 @@ double CNCSetup::getFeedRate()
     return feedRate;
 }
 
+std::vector<double> CNCSetup::getAbsolutePos()
+{
+    std::vector<double> pos_vec;
+    pos_vec.push_back( absolutePosX );
+    pos_vec.push_back( absolutePosY );
+    pos_vec.push_back( absolutePosZ );
+
+    return pos_vec;
+}
+
 bool containsCodeType(std::vector< GCodeCommand > command_vec, char c)
 {
     bool contains = false;

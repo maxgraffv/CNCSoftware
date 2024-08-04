@@ -11,6 +11,7 @@
 #include <thread>
 #include <functional>
 #include <stdexcept>
+#include <sstream>
 
 /*
 FOR GPIO14 GPIO15 to work, UART has to be disabled
@@ -34,17 +35,38 @@ sudo reboot
 */
 
 
+void program( std::vector<std::string> args);
 
 int main( int argc, char** argv )
 {
     std::vector< std::string > args;
+    std::string line, word;
+    std::istringstream stream;
 
-    for(int i = 0; i < argc; i++)
-        args.push_back(argv[i]);
+    switch( argc )
+    {
+        case 1:
+            while( args[0] != "quit")
+            {
+                std::cout << "GraffOS ";
+                std::getline(std::cin, line); 
+                stream = std::istringstream(line);
+                while( stream >> word )
+                    args.push_back(word);
+                program( args );
+            }
+            break;
+        default:
+            for(int i = 1; i < argc; i++)
+                args.push_back(argv[i]);
+            program( args );
+    }
 
-    
-    
+    return 0;
+}
 
+void program( std::vector<std::string> args)
+{
     StepperMotor motorAxisZ( GPIO17 , GPIO27 , GPIO22, GPIO14, GPIO15, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 2);
     StepperMotor motorAxisY_1(GPIO23 , GPIO24, GPIO10, GPIO9, GPIO11, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 8);
     StepperMotor motorAxisY_2( GPIO25, GPIO8, GPIO7, GPIO5, GPIO6, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 8);
@@ -61,30 +83,23 @@ int main( int argc, char** argv )
     CNCSetup myCNC( motorAxisX, motorAxisY_1, motorAxisY_2, motorAxisZ, spindle,
         limitSwitchX, limitSwitchY, limitSwitchZ, limitSwitchT, Units::milimeter );
 
-    std::string user_input;
-    switch( argc )
-    {
-        case 1:
-            // enterProgram();
-            std::cout << "GraffOS "; std::cin >> user_input;
-            break;
-        case 3:
-            if( args[1] == "run" )
-            {
-                GCodeFile operation1( args[2] );
-                myCNC.run(operation1);
-            }
-            break;
-        default:
-            throw std::runtime_error("Error: unknown argument");
-
-    }
-
-
 
     
 
 
+    if( args[0] == "run" )
+    {
+        GCodeFile operation1( args[2] );
+        myCNC.run(operation1);
+    }
+    if( args[0] == "info" )
+    {
+        std::cout << "current position X: " << myCNC.getAbsolutePos()[0] << std::endl;
+        std::cout << "current position Y: " << myCNC.getAbsolutePos()[1] << std::endl;
+        std::cout << "current position Z: " << myCNC.getAbsolutePos()[2] << std::endl;
+    }
+    
 
-    return 0;
+
+
 }
