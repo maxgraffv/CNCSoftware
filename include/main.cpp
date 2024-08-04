@@ -55,6 +55,7 @@ int main( int argc, char** argv )
                 while( stream >> word )
                     args.push_back(word);
                 program( args );
+                args.clear();
             }
             break;
         default:
