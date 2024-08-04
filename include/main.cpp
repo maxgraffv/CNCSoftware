@@ -92,7 +92,7 @@ void program( std::vector<std::string> args)
 
     if( args[0] == "run" )
     {
-        GCodeFile operation1( args[2] );
+        GCodeFile operation1( args[1] );
         myCNC.run(operation1);
     }
     if( args[0] == "info" )
