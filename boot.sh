@@ -10,6 +10,7 @@ echo "repository pulling...\n"
 cd 
 cd ~/CNCSoftware/
 git pull origin main
+cd
 echo "repository pulled\n"
 echo "\n"
 
