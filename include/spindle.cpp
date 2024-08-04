@@ -36,9 +36,6 @@ void Spindle::setSpeed(double speed)
     pwmWrite(pwm_pin, pwmValue);
     Motor::setSpeed(speed);
 
-
-
-
 } 
 
 double Spindle::getSpeed()

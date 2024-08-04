@@ -4,7 +4,7 @@ DefaultDependencies=no
 After=local-fs.target
 
 [Service]
-ExecStart=/usr/bin/fbi -T 1 -noverbose -a /home/max/cnc-sw/CNCSoftware/logo.png
+ExecStart=/usr/local/bin/show_splash.sh
 StandardInput=tty
 StandardOutput=tty
 

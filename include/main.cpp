@@ -10,6 +10,7 @@
 #include "rpi3pinout.h"
 #include <thread>
 #include <functional>
+#include <stdexcept>
 
 /*
 FOR GPIO14 GPIO15 to work, UART has to be disabled
@@ -34,8 +35,15 @@ sudo reboot
 
 
 
-int main()
+int main( int argc, char** argv )
 {
+    std::vector< std::string > args;
+
+    for(int i = 0; i < argc; i++)
+        args.push_back(argv[i]);
+
+    
+    
 
     StepperMotor motorAxisZ( GPIO17 , GPIO27 , GPIO22, GPIO14, GPIO15, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 2);
     StepperMotor motorAxisY_1(GPIO23 , GPIO24, GPIO10, GPIO9, GPIO11, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 8);
@@ -50,9 +58,28 @@ int main()
 
 
 
-    CNCSetup myCNC( motorAxisX, motorAxisY_1, motorAxisY_2, motorAxisZ, spindle, Units::milimeter );
-    GCodeFile operation1( "103.ngc" );
-    myCNC.run(operation1);
+    CNCSetup myCNC( motorAxisX, motorAxisY_1, motorAxisY_2, motorAxisZ, spindle,
+        limitSwitchX, limitSwitchY, limitSwitchZ, limitSwitchT, Units::milimeter );
+
+    std::string user_input;
+    switch( argc )
+    {
+        case 1:
+            // enterProgram();
+            std::cout << "GraffOS "; std::cin >> user_input;
+            break;
+        case 3:
+            if( args[1] == "run" )
+            {
+                GCodeFile operation1( args[2] );
+                myCNC.run(operation1);
+            }
+            break;
+        default:
+            throw std::runtime_error("Error: unknown argument");
+
+    }
+
 
 
     

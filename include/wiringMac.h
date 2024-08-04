@@ -1,6 +1,8 @@
 #ifndef WIRING_MAC_H
 #define WIRING_MAC_H
 
+#include <functional>
+
 #define INPUT 0
 #define OUTPUT 1
 #define PWM_OUTPUT 2
@@ -19,6 +21,11 @@
 #define PWM_MODE_MS 0
 #define PWM_MODE_BAL 1
 
+#define INT_EDGE_SETUP 0
+#define INT_EDGE_RISING 1
+#define INT_EDGE_FALLING 2
+#define INT_EDGE_BOTH 3
+
 int wiringPiSetup();
 void pinMode(int a, int b);
 void digitalWrite(int a, int b);
@@ -29,6 +36,9 @@ void pwmSetMode(int val);
 void pwmSetRange(int val);
 void pwmSetClock(int val);
 void pwmWrite(int pwm_pin,int val);  
+
+template<typename funcType>
+int wiringPiISR(int a, int b, funcType f );
 
 
 #endif

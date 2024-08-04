@@ -23,10 +23,17 @@
 CNCSetup::CNCSetup( 
         StepperMotor& xAxisMotor, StepperMotor& yAxisMotor1,
         StepperMotor& yAxisMotor2, StepperMotor& zAxisMotor,
-        Spindle& spindle, Units units = Units::milimeter) 
+        Spindle& spindle,
+        LimitSwitch& lSwitchX,
+        LimitSwitch& lSwitchY,
+        LimitSwitch& lSwitchZ,
+        LimitSwitch& lSwitchT,
+        Units units = Units::milimeter) 
         : xAxisMotor(xAxisMotor), yAxisMotor1(yAxisMotor1),
             yAxisMotor2(yAxisMotor2), zAxisMotor(zAxisMotor),
             spindle(spindle), units(units),
+            limitSwitchX(lSwitchX), limitSwitchY(lSwitchY),
+            limitSwitchZ(lSwitchZ), limitSwitchT(lSwitchT),
             absolutePosX(0), absolutePosY(0), absolutePosZ(0), 
             arcDistanceMode(ArcDistanceMode::incremental),
             currentTool(0), 
@@ -927,21 +934,21 @@ void CNCSetup::setCurrentCoordinateSystem( double coordinateSystemId)
 
 void CNCSetup::home()
 {
-    // const int XAxisHomeSensor = 8;
-    // int x = 1;
-    // pinMode(XAxisHomeSensor, INPUT);
-    // pullUpDnControl(XAxisHomeSensor, PUD_DOWN);
+    int x = 1;
 
-    // while( x != 0)
-    // {
-    //     xAxisMotor.step();
-    //     if( wiringPIISR(XAxisHomeSensor, INT_EDGE_RISING, x = 0 ) )
-    //     {
-    //         std::cerr << "ISR Failed" << std::endl;
-    //     }
+    pinMode(limitSwitchX.getPin(), INPUT);
+    pullUpDnControl(limitSwitchX.getPin(), PUD_DOWN);
+
+    while( x != 0)
+    {
+        rotate(xAxisMotor, 0.04, 8000);
+        if( wiringPiISR(limitSwitchX.getPin(), INT_EDGE_RISING, x = 0 ) )
+        {
+            std::cerr << "ISR Failed" << std::endl;
+        }
 
 
-    // }
+    }
 
 
 

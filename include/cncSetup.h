@@ -18,6 +18,7 @@
 #include <functional>
 #include "CoordinateSystem.h"
 #include <set>
+#include "LimitSwitch.h"
 
 
 class CNCSetup
@@ -29,6 +30,12 @@ class CNCSetup
         StepperMotor yAxisMotor2;
         StepperMotor zAxisMotor;
         Spindle spindle;
+
+        LimitSwitch limitSwitchX;
+        LimitSwitch limitSwitchY;
+        LimitSwitch limitSwitchZ;
+        LimitSwitch limitSwitchT;
+
         Units units;
 
         double absolutePosX;
@@ -66,6 +73,10 @@ class CNCSetup
             StepperMotor& yAxisMotor2,
             StepperMotor& zAxisMotor,
             Spindle& spindle,
+            LimitSwitch& lSwitchX,
+            LimitSwitch& lSwitchY,
+            LimitSwitch& lSwitchZ,
+            LimitSwitch& lSwitchT,
             Units units );
 
         void setXAxisMotor( StepperMotor& xAxisMotor );
