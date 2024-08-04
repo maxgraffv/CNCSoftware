@@ -1,4 +1,4 @@
-echo "APT update...\n"
+echo -e "APT update...\n"
 sudo apt update
 echo "\n\n"
 
@@ -8,14 +8,14 @@ echo "\n\n"
 
 echo "repository pulling...\n"
 cd 
-cd /CNCSoftware/
+cd ~/CNCSoftware/
 git pull origin main
 echo "repository pulled\n"
 echo "\n"
 
 
 echo "compiling...\n"
-g++ include/*.cpp -o GraffOS -lwiringPi -std=c++20                                         
+g++ ~/CNCSoftware/include/*.cpp -o ~/GraffOS -lwiringPi -std=c++20                                         
 echo "compiled\n"  
 
 

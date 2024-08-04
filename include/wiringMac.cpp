@@ -48,5 +48,5 @@ void pwmWrite(int pwm_pin,int val)
 template<typename funcType>
 int wiringPiISR(int a, int b, funcType f )
 {
-
+    return 2;
 }

@@ -35,14 +35,16 @@ echo ""
 
 
 echo -e "splashscreen service...\n"
+git pull
 sudo mv ~/CNCSoftware/splashScreen/splashScreen.service /etc/systemd/system/
 sudo mv ~/CNCSoftware/splashScreen/show_splash.sh /usr/local/bin/
 sudo mv ~/CNCSoftware/splashScreen/logo.png /usr/local/share/
+sudo rmdir ~/CNCSoftware/splashScreen
 sudo chmod +x /usr/local/bin/show_splash.sh
 sudo chmod 644 /usr/local/share/logo.png
 sudo systemctl enable splashScreen.service
 sudo systemctl start splashScreen.service
-#add "quiet" to /boot/firmaware/cmdline.txt
+#add "quiet splash" to /boot/firmaware/cmdline.txt
 sudo systemctl deamon-reload
 sudo systemctl restart splashScreen.service
 echo ""
