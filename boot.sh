@@ -16,7 +16,7 @@ echo "\n"
 
 
 echo "compiling...\n"
-g++ ~/CNCSoftware/include/*.cpp -o ~/GraffOS -lwiringPi -std=c++20                                         
+g++ /home/max/CNCSoftware/include/*.cpp -o /home/max/GraffOS -lwiringPi -std=c++20                                         
 echo "compiled\n"  
 
 
