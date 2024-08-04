@@ -54,7 +54,8 @@ int main( int argc, char** argv )
                 stream = std::istringstream(line);
                 while( stream >> word )
                     args.push_back(word);
-                program( args );
+                if(!args.empty())
+                    program( args );
                 args.clear();
             }
             break;
