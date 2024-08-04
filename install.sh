@@ -35,9 +35,16 @@ echo ""
 
 
 echo -e "splashscreen service...\n"
-sudo mv ./CNCSoftware/splashScreen/splashScreen.service /etc/systemd/system/
-sudo mv ./CNCSoftware/splashScreen/show_splash.sh /usr/local/bin/
+sudo mv ~/CNCSoftware/splashScreen/splashScreen.service /etc/systemd/system/
+sudo mv ~/CNCSoftware/splashScreen/show_splash.sh /usr/local/bin/
+sudo mv ~/CNCSoftware/splashScreen/logo.png /usr/local/share/
+sudo chmod +x /usr/local/bin/show_splash.sh
+sudo chmod 644 /usr/local/share/logo.png
 sudo systemctl enable splashScreen.service
+sudo systemctl start splashScreen.service
+#add "quiet" to /boot/firmaware/cmdline.txt
+sudo systemctl deamon-reload
+sudo systemctl restart splashScreen.service
 echo ""
 echo ""
 
