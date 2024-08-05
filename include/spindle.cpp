@@ -29,7 +29,7 @@ Spindle::~Spindle()
 
 void Spindle::setSpeed(double speed)
 {
-    double maxRPM = 12000;
+    double maxRPM = 6000;
     double RPMproportion = speed/maxRPM;
 
     int pwmValue = static_cast<int>( RPMproportion*1023 );
