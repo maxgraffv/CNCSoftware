@@ -4,6 +4,12 @@
 #include "motor.h"
 #include "MotorRotationDirectionEnum.h"
 
+#ifdef __APPLE__
+    #include "wiringMac.h"
+#else
+    #include <wiringPi.h>
+#endif
+
 class Spindle : public Motor
 {
 
