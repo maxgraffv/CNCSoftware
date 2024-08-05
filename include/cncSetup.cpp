@@ -879,6 +879,7 @@ SpindleState CNCSetup::getSpindleState()
 int CNCSetup::setSpindleSpeed( double speed)
 {
     this->spindleSpeed = speed;
+    spindle.setSpeed(speed);
     std::cout << "spindle speed set to " << this->spindleSpeed << std::endl;
     return 0;
 }
