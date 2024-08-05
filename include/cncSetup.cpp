@@ -845,10 +845,24 @@ int CNCSetup::setSpindleState( SpindleState spindleState,  std::vector<GCodeComm
                 setSpindleSpeed( command_line[i].getCommandValue() );
             }
         }
+
+        switch (spindleState)
+        {
+        case SpindleState::ONClockwise:
+            spindle.setDirection( MotorRotationDirection::CLOCKWISE );
+            break;
+        case SpindleState::ONCounterClockwise:
+            spindle.setDirection( MotorRotationDirection::ANTICLOCKWISE );
+            break;
+        
+        default:
+            break;
+        }    
+    
     }
     else if( spindleState == SpindleState::OFF )
     {
-
+        setSpindleSpeed(0);
     }
 
 

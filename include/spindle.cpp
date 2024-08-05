@@ -47,10 +47,10 @@ void Spindle::setDirection( MotorRotationDirection direction)
     switch(direction)
     {
         case MotorRotationDirection::CLOCKWISE :
-            digitalWrite(dir_pin, HIGH);
+            digitalWrite(dir_pin, LOW);
             break;
         case MotorRotationDirection::ANTICLOCKWISE :
-            digitalWrite(dir_pin, LOW);
+            digitalWrite(dir_pin, HIGH);
     }
 }
 
