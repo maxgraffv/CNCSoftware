@@ -36,40 +36,10 @@ sudo reboot
 */
 
 
-void program( std::vector<std::string> args);
+void program( std::vector<std::string> args, CNCSetup& myCNC);
 
 int main( int argc, char** argv )
-{
-    std::vector< std::string > args;
-    std::string line, word;
-    std::istringstream stream;
-
-    switch( argc )
-    {
-        case 1:
-            while(true)
-            {
-                std::cout << "GraffOS ";
-                std::getline(std::cin, line); 
-                stream = std::istringstream(line);
-                while( stream >> word )
-                    args.push_back(word);
-                if(!args.empty())
-                    program( args );
-                args.clear();
-            }
-            break;
-        default:
-            for(int i = 1; i < argc; i++)
-                args.push_back(argv[i]);
-            program( args );
-    }
-
-    return 0;
-}
-
-void program( std::vector<std::string> args)
-{
+{ 
     StepperMotor motorAxisZ( GPIO17 , GPIO27 , GPIO22, GPIO14, GPIO15, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 2);
     StepperMotor motorAxisY_1(GPIO23 , GPIO24, GPIO10, GPIO9, GPIO11, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 8);
     StepperMotor motorAxisY_2( GPIO25, GPIO8, GPIO7, GPIO5, GPIO6, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 8);
@@ -87,8 +57,36 @@ void program( std::vector<std::string> args)
         limitSwitchX, limitSwitchY, limitSwitchZ, limitSwitchT, Units::milimeter );
 
 
-    
+    std::vector< std::string > args;
+    std::string line, word;
+    std::istringstream stream;
 
+    switch( argc )
+    {
+        case 1:
+            while(true)
+            {
+                std::cout << "GraffOS ";
+                std::getline(std::cin, line); 
+                stream = std::istringstream(line);
+                while( stream >> word )
+                    args.push_back(word);
+                if(!args.empty())
+                    program( args, myCNC );
+                args.clear();
+            }
+            break;
+        default:
+            for(int i = 1; i < argc; i++)
+                args.push_back(argv[i]);
+            program( args, myCNC );
+    }
+
+    return 0;
+}
+
+void program( std::vector<std::string> args, CNCSetup& myCNC)
+{
 
     if( args[0] == "run" )
     {
@@ -103,7 +101,43 @@ void program( std::vector<std::string> args)
     }
     if( args[0] == "moveby" )
     {
-        
+        double f = 1000;
+        double x = 0;
+        double y = 0;
+        double z = 0;
+
+        std::string word;
+        for(int i = 1; i < args.size(); i++)
+        {
+            if(args[i][0] == '-' && args[i][1] == 'x')
+            {
+                word = std::string( args[i].begin()+2, args[i].end() );
+                x = std::stod(word);
+            }
+            else if(args[i][0] == '-' && args[i][1] == 'y')
+            {
+                word = std::string( args[i].begin()+2, args[i].end() );
+                y = std::stod(word);
+            }
+            else if(args[i][0] == '-' && args[i][1] == 'z')
+            {
+                word = std::string( args[i].begin()+2, args[i].end() );
+                z = std::stod(word);
+            }
+            else if(args[i][0] == '-' && args[i][1] == 'f')
+            {
+                word = std::string( args[i].begin()+2, args[i].end() );
+                f = std::stod(word);
+            }
+            else
+            {
+                std::cout << "Error: unknown flag" << std::endl;
+                break;
+            }
+        }
+
+        myCNC.feedrateMoveBy(f,x,y,z );
+
     }
     if( args[0] == "moveto" )
     {

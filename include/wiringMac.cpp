@@ -45,8 +45,7 @@ void pwmWrite(int pwm_pin,int val)
     
 }
 
-template<typename funcType>
-int wiringPiISR(int a, int b, funcType f )
+int wiringPiISR(int a, int b, void (*func)(void) )
 {
-    return 2;
+    return 0;
 }

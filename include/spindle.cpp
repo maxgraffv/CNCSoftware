@@ -35,7 +35,6 @@ void Spindle::setSpeed(double speed)
     int pwmValue = static_cast<int>( RPMproportion*1023 );
     pwmWrite(pwm_pin, pwmValue);
     Motor::setSpeed(speed);
-
 } 
 
 double Spindle::getSpeed()

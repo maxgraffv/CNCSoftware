@@ -54,14 +54,8 @@ void CNCSetup::run( GCodeFile &gcodeFile )
         process( command_vec[i] );
     }
 
-    // for( int i = 0; i < command_vec.size(); i++)
-    // {
-    //     for(int j = 0; j < command_vec[i].size(); j++)
-    //         std::cout << command_vec[i][j].getPriority() << "[" << command_vec[i][j].getCommandType() << "]("<<command_vec[i][j].getCommandValue() << ") ";
-    //     std::cout << std::endl;
-    // }
-    // gcodeFile.printCommands();
-
+    coordinateSystems_set.clear();
+    coordinateSystems_set.insert(machineCoordinates);
 }
 
 void CNCSetup::process( std::vector< GCodeCommand >& command_line )
@@ -283,6 +277,7 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
             break;
         case 'S':
             std::cout << " Speed Set: " << command.getCommandValue() << std::endl;
+            spindle.setSpeed(command.getCommandValue());
             break;
         case 'T':
             CNCSetup::setNewTool( command.getCommandValue() );
@@ -479,15 +474,15 @@ void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< G
                     deltaZ = newZ - currentZ;
 
                     feedrateMoveBy(feedRateMax,deltaX, deltaY, deltaZ);
-                    absolutePosX += deltaX;
-                    absolutePosY += deltaY;
-                    absolutePosZ += deltaZ;
+                    // absolutePosX += deltaX;
+                    // absolutePosY += deltaY;
+                    // absolutePosZ += deltaZ;
                     break;
                 case DistanceMode::incrementalDistance :
                     feedrateMoveBy(feedRateMax, newX, newY, newZ);
-                    absolutePosX += newX;
-                    absolutePosY += newY;
-                    absolutePosZ += newZ;
+                    // absolutePosX += newX;
+                    // absolutePosY += newY;
+                    // absolutePosZ += newZ;
                     break;
             }
             break;
@@ -502,16 +497,16 @@ void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< G
 
                     feedrateMoveBy(this->feedRate,deltaX, deltaY, deltaZ);
 
-                    absolutePosX += deltaX;
-                    absolutePosY += deltaY;
-                    absolutePosZ += deltaZ;
+                    // absolutePosX += deltaX;
+                    // absolutePosY += deltaY;
+                    // absolutePosZ += deltaZ;
 
                     break;
                 case DistanceMode::incrementalDistance :
                     feedrateMoveBy(this->feedRate, newX, newY, newZ);
-                    absolutePosX += newX;
-                    absolutePosY += newY;
-                    absolutePosZ += newZ;
+                    // absolutePosX += newX;
+                    // absolutePosY += newY;
+                    // absolutePosZ += newZ;
                     break;
             }
             break;
@@ -617,9 +612,9 @@ void CNCSetup::arcMoveTo( double absoluteFinalX, double absoluteFinalY, double a
 
         feedrateMoveBy( getFeedRate(), delta_x, delta_y, delta_z );
 
-        absolutePosX += delta_x;
-        absolutePosY += delta_y;
-        absolutePosZ += delta_z;
+        // absolutePosX += delta_x;
+        // absolutePosY += delta_y;
+        // absolutePosZ += delta_z;
 
     }
 }
@@ -647,6 +642,10 @@ void CNCSetup::feedrateMoveBy(double feedrate, double deltaX, double deltaY, dou
     t2.join();
     t3.join();
     t4.join();
+
+    absolutePosX += deltaX;
+    absolutePosY += deltaY;
+    absolutePosZ += deltaZ;
 
     // std::cout << "Moved in MotionType: " << (int)CNCSetup::getMotionType() 
     // << " by X: " << deltaX << " Y: "<< deltaY << " Z: " << deltaZ << std::endl;
@@ -948,20 +947,18 @@ void fakeFunc()
 
 void CNCSetup::home()
 {
-    int x = 1;
+    bool detected = 0;
 
     pinMode(limitSwitchX.getPin(), INPUT);
     pullUpDnControl(limitSwitchX.getPin(), PUD_DOWN);
 
-    while( x != 0)
+    while( detected == 0)
     {
         rotate(xAxisMotor, 0.04, 8000);
         if( wiringPiISR(limitSwitchX.getPin(), INT_EDGE_RISING, fakeFunc ) )
         {
             std::cerr << "ISR Failed" << std::endl;
         }
-
-
     }
 
 
