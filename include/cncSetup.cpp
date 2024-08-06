@@ -46,6 +46,7 @@ CNCSetup::CNCSetup(
 
 void CNCSetup::run( GCodeFile &gcodeFile )
 {
+    systemEnable();
     std::vector< std::vector< GCodeCommand> > command_vec 
         = gcodeFile.getCommand_vec();
 
