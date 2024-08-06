@@ -693,10 +693,9 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
 int CNCSetup::programStop()
 {
     std::cout << "Program Stopping..." << std::endl;
-    xAxisMotor.disable();
-    yAxisMotor1.disable();
-    yAxisMotor2.disable();
-    zAxisMotor.disable();
+
+    systemDisable();
+
     std::cout << "Program Stopped By M0 command" << std::endl;
     return 0;
 }
@@ -704,7 +703,7 @@ int CNCSetup::programStop()
 int CNCSetup::programPause()
 {
     std::string userInput("");
-    std::cout << "Program paused\n enter: "; 
+    std::cout << "Program paused\n enter to unpause: "; 
     std::cin >> userInput;
     return 0;
 }
@@ -827,7 +826,22 @@ Tool CNCSetup::getTool()
 
 int CNCSetup::toolChange()
 {
-    std::cout << "change tool to " << currentTool.getToolId() << std::endl;
+    std::string user_input("");
+    while(true)
+    {
+        std::cout << "change tool to: Tool " << currentTool.getToolId() << std::endl;
+        std::cout << "if tool changed... continue ? [yes/no] ";
+        std::cin >> user_input;
+        if( user_input == "yes" )
+            break;
+        else if( user_input == "no")
+            continue;
+        else
+            std::cout << "option unavailable" << std::endl;
+    }
+
+
+
     return 0;
 }
 
@@ -954,10 +968,13 @@ void CNCSetup::setCurrentCoordinateSystem( double coordinateSystemId)
     }
 }
 
-void fakeFunc()
-{
-    std::cout << "ISR wow" << std::endl;
-}
+
+
+
+// void fakeFunc()
+// {
+//     std::cout << "ISR wow" << std::endl;
+// }
 
 
 void CNCSetup::home()
@@ -965,18 +982,54 @@ void CNCSetup::home()
     bool detected = 0;
 
     pinMode(limitSwitchX.getPin(), INPUT);
-    pullUpDnControl(limitSwitchX.getPin(), PUD_DOWN);
+    // pullUpDnControl(limitSwitchX.getPin(), PUD_DOWN);
 
-    while( detected == 0)
+    int switchXVal = digitalRead(limitSwitchX.getPin());
+    while( switchXVal != HIGH)
     {
-        rotate(xAxisMotor, 0.04, 8000);
-        if( wiringPiISR(limitSwitchX.getPin(), INT_EDGE_RISING, fakeFunc ) )
-        {
-            std::cerr << "ISR Failed" << std::endl;
-        }
+        rotate(xAxisMotor, -0.04, 8000);
+        switchXVal = digitalRead(limitSwitchX.getPin());
+        // if( wiringPiISR(limitSwitchX.getPin(), INT_EDGE_RISING, fakeFunc ) )
+        // {
+        //     std::cerr << "ISR Failed" << std::endl;
+        // }
     }
 
+    pinMode(limitSwitchY.getPin(), INPUT);
+    int switchYVal = digitalRead(limitSwitchY.getPin());
+    while( switchYVal != HIGH)
+    { 
+        std::thread t1( [&]{rotate(yAxisMotor1, -0.04, 8000);} );
+        std::thread t2( [&]{rotate( yAxisMotor2, -0.04, 8000); } );
 
+        t1.join();
+        t2.join();
 
+        switchYVal = digitalRead(limitSwitchY.getPin());
+    }
 
+    pinMode(limitSwitchZ.getPin(), INPUT);
+    int switchZVal = digitalRead(limitSwitchZ.getPin());
+    while( switchZVal != HIGH)
+    { 
+        rotate(xAxisMotor, -0.04, 8000);
+        switchZVal = digitalRead(limitSwitchZ.getPin());
+    }
+}
+
+void CNCSetup::systemEnable()
+{
+    xAxisMotor.enable();
+    yAxisMotor1.enable();
+    yAxisMotor2.enable();
+    zAxisMotor.enable();
+}
+
+void CNCSetup::systemDisable()
+{
+    xAxisMotor.disable();
+    yAxisMotor1.disable();
+    yAxisMotor2.disable();
+    zAxisMotor.disable();
+    spindle.setSpeed(0);
 }

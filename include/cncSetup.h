@@ -148,6 +148,9 @@ class CNCSetup
 
         void setCurrentCoordinateSystem( double coordinateSystemId );
 
+        void systemEnable();
+        void systemDisable();
+
 
 };
 
