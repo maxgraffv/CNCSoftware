@@ -69,6 +69,10 @@ void CNCSetup::process( std::vector< GCodeCommand >& command_line )
             CNCSetup::setMotionType(getMotionType(), command_line); //makes a motion of a type set beforehand
         else
             execute( command_line );
+
+        std::cout << "\rPos X: " << absolutePosX << "\t Pos Y: " << absolutePosY << "\t Pos Z: " << absolutePosZ
+        << "\t Feedrate: " << getFeedRate() << "[mm/min]\t Speed: " << getSpindleSpeed() << "[rpm]\t "
+         << std::flush;
     }
 
 }
@@ -232,8 +236,7 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
             CNCSetup::setFeedRate( command.getCommandValue() );
             break;
         case 'S':
-            std::cout << " Speed Set: " << command.getCommandValue() << std::endl;
-            spindle.setSpeed(command.getCommandValue());
+            setSpindleSpeed(command.getCommandValue());
             break;
         case 'T':
             CNCSetup::setNewTool( command.getCommandValue() );
@@ -251,7 +254,7 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
 int CNCSetup::setFeedRate( double feedRate )
 {
     this->feedRate = feedRate;
-    std::cout << "Feedrate set to: " << feedRate << std::endl;
+    // std::cout << "Feedrate set to: " << feedRate << std::endl;
     return 0;
 
 }
@@ -603,10 +606,7 @@ void CNCSetup::feedrateMoveBy(double feedrate, double deltaX, double deltaY, dou
     absolutePosY += deltaY;
     absolutePosZ += deltaZ;
 
-    // std::cout << "Moved in MotionType: " << (int)CNCSetup::getMotionType() 
-    // << " by X: " << deltaX << " Y: "<< deltaY << " Z: " << deltaZ << std::endl;
-    // std::cout << "FR x: " << feedrateX << " y: " << feedrateY << " z: " << feedrateZ << std::endl;
-    std::cout << "x" << absolutePosX << "y" << absolutePosY << "z" << absolutePosZ << std::endl;
+    // std::cout << "x" << absolutePosX << "y" << absolutePosY << "z" << absolutePosZ << std::endl;
 
 }
 
@@ -850,7 +850,7 @@ int CNCSetup::setSpindleSpeed( double speed)
 {
     this->spindleSpeed = speed;
     spindle.setSpeed(speed);
-    std::cout << "spindle speed set to " << this->spindleSpeed << std::endl;
+    // std::cout << "spindle speed set to " << this->spindleSpeed << std::endl;
     return 0;
 }
 

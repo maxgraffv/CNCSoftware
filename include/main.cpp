@@ -13,6 +13,10 @@
 #include <stdexcept>
 #include <sstream>
 #include <cstdlib>
+#include <csignal>
+#include <unistd.h>
+
+#include <termios.h>
 
 /*
 FOR GPIO14 GPIO15 to work, UART has to be disabled
@@ -38,8 +42,15 @@ sudo reboot
 
 void program( std::vector<std::string> args, CNCSetup& myCNC);
 
+void handleSIGTSTP(int signal);
+
+CNCSetup* cncSetupPTR = nullptr;
+
 int main( int argc, char** argv )
 { 
+
+    signal(SIGTSTP, handleSIGTSTP);
+
     StepperMotor motorAxisZ( GPIO17 , GPIO27 , GPIO22, GPIO14, GPIO15, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 2);
     StepperMotor motorAxisY_1(GPIO23 , GPIO24, GPIO10, GPIO9, GPIO11, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 8);
     StepperMotor motorAxisY_2( GPIO25, GPIO8, GPIO7, GPIO5, GPIO6, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 8);
@@ -55,6 +66,7 @@ int main( int argc, char** argv )
 
     CNCSetup myCNC( motorAxisX, motorAxisY_1, motorAxisY_2, motorAxisZ, spindle,
         limitSwitchX, limitSwitchY, limitSwitchZ, limitSwitchT, Units::milimeter );
+    cncSetupPTR = &myCNC; //for program exit handling SIGTSTP
 
 
     std::vector< std::string > args;
@@ -67,6 +79,7 @@ int main( int argc, char** argv )
             while(true)
             {
                 std::cout << "GraffOS ";
+
                 std::getline(std::cin, line); 
                 stream = std::istringstream(line);
                 while( stream >> word )
@@ -83,6 +96,14 @@ int main( int argc, char** argv )
     }
 
     return 0;
+}
+
+void handleSIGTSTP( int signal )
+{
+    std::cout << "Program Stopped Unexpectedly" << std::endl;
+    std::cout << "System shutdown..." << std::endl;
+    cncSetupPTR->systemDisable();
+    std::cout << "Shutdown COMPLETE" << std::endl;
 }
 
 void program( std::vector<std::string> args, CNCSetup& myCNC)

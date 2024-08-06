@@ -84,7 +84,7 @@ std::vector<ArcPath::Point> ArcPath::generate(  double start_x, double start_y, 
             break;
     }
 
-    std::cout << "RADIUS: " << radius << std::endl;
+    // std::cout << "RADIUS: " << radius << std::endl;
 
     if(!clockwise)
     {
