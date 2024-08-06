@@ -1,0 +1,12 @@
+[Unit]
+Description=My Script Service
+After=default.target
+
+[Service]
+Type=idle
+ExecStart=/bin/bash /home/max/CNCSoftware/boot.sh
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+

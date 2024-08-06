@@ -61,7 +61,6 @@ void CNCSetup::run( GCodeFile &gcodeFile )
 void CNCSetup::process( std::vector< GCodeCommand >& command_line )
 {
     int letter_count = command_line.size();
-    int letters_used = 0;
 
 
     while( !command_line.empty() )
@@ -77,11 +76,9 @@ void CNCSetup::process( std::vector< GCodeCommand >& command_line )
 
 int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
 {
-    int letters_used = 0;
     GCodeCommand command = command_line[0];
 
     command_line.erase(command_line.begin(), command_line.begin() + 1 );
-    letters_used++;
 
     switch(command.getCommandType())
     {
@@ -90,29 +87,29 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
             break;
         case 'G':
             if( command.getCommandValue() == 0 )
-                letters_used += CNCSetup::setMotionType( MotionTypeEnum::RapidPositioning, command_line );
+                CNCSetup::setMotionType( MotionTypeEnum::RapidPositioning, command_line );
             else if( command.getCommandValue() == 1 )
-                letters_used += CNCSetup::setMotionType( MotionTypeEnum::LinearInterpolation, command_line );
+                CNCSetup::setMotionType( MotionTypeEnum::LinearInterpolation, command_line );
             else if( command.getCommandValue() == 2 )
-                letters_used += CNCSetup::setMotionType( MotionTypeEnum::CircularInterpolationClockwise, command_line );
+                CNCSetup::setMotionType( MotionTypeEnum::CircularInterpolationClockwise, command_line );
             else if( command.getCommandValue() == 3 )
-                letters_used += CNCSetup::setMotionType( MotionTypeEnum::CircularInterpolationCounterClockwise, command_line );
+                CNCSetup::setMotionType( MotionTypeEnum::CircularInterpolationCounterClockwise, command_line );
             // else if( command.getCommandValue() == 4 )
             //     CNCSetup::dwell();
             // else if( command.getCommandValue() == 10 )
             //     CNCSetup::coordinateSystemOriginSetting();
             else if( command.getCommandValue() == 17 )
-                letters_used = CNCSetup::setMotionPlane( MotionPlane::XY );
+                CNCSetup::setMotionPlane( MotionPlane::XY );
             else if( command.getCommandValue() == 18 )
-                letters_used = CNCSetup::setMotionPlane( MotionPlane::XZ );
+                CNCSetup::setMotionPlane( MotionPlane::XZ );
             else if( command.getCommandValue() == 19 )
-                letters_used = CNCSetup::setMotionPlane( MotionPlane::YZ );
+                CNCSetup::setMotionPlane( MotionPlane::YZ );
             else if( command.getCommandValue() == 20 )
-                letters_used = CNCSetup::setUnits( Units::inch );
+                CNCSetup::setUnits( Units::inch );
             else if( command.getCommandValue() == 21 )
-                letters_used = CNCSetup::setUnits( Units::milimeter );
-            // else if( command.getCommandValue() == 28 )
-            //     CNCSetup::returnHome();
+                CNCSetup::setUnits( Units::milimeter );
+            else if( command.getCommandValue() == 28 )
+                CNCSetup::home();
             // else if( command.getCommandValue() == 30 )
             //     CNCSetup::returnSecondaryHome();
             // else if( command.getCommandValue() == 38.2 )
@@ -124,50 +121,9 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
             // else if( command.getCommandValue() == 42 )
             //     CNCSetup::toolRadiusCompensationRight();
             // else if( command.getCommandValue() == 43 )
-            // else if( command.getCommandValue() == 18 )
-            //     CNCSetup::selectXZPlane();
-            // else if( command.getCommandValue() == 19 )
-            //     CNCSetup::selectYZPlane();
-            // else if( command.getCommandValue() == 20 )
-            //     CNCSetup::setUnits( Units::inch );
-            // else if( command.getCommandValue() == 21 )
-            //     CNCSetup::setUnits( Units::milimeter );
-            // else if( command.getCommandValue() == 28 )
-            //     CNCSetup::returnHome();
-            // else if( command.getCommandValue() == 30 )
-            //     CNCSetup::returnSecondaryHome();
-            // else if( command.getCommandValue() == 38.2 )
-            //     CNCSetup::straightProbe();
-            // else if( command.getCommandValue() == 40 )
-            //     CNCSetup::cancelCutterRadiusCompensation();
-            // else if( command.getCommandValue() == 41 )
-            //     CNCSetup::toolRadiusCompensationLeft();
-            // else if( command.getCommandValue() == 42 )
-            //     CNCSetup::toolRadiusCompensationRight();
-            // else if( command.getCommandValue() == 43 )
-
-            // else if( command.getCommandValue() == 18 )
-            //     CNCSetup::selectXZPlane();
-            // else if( command.getCommandValue() == 19 )
-            //     CNCSetup::selectYZPlane();
-            // else if( command.getCommandValue() == 20 )
-            //     CNCSetup::setUnits( Units::inch );
-            // else if( command.getCommandValue() == 21 )
-            //     CNCSetup::setUnits( Units::milimeter );
-            // else if( command.getCommandValue() == 28 )
-            //     CNCSetup::returnHome();
-            // else if( command.getCommandValue() == 30 )
-            //     CNCSetup::returnSecondaryHome();
-            // else if( command.getCommandValue() == 38.2 )
-            //     CNCSetup::straightProbe();
-            // else if( command.getCommandValue() == 40 )
-            //     CNCSetup::cancelCutterRadiusCompensation();
-            // else if( command.getCommandValue() == 41 )
-            //     CNCSetup::toolRadiusCompensationLeft();
-            // else if( command.getCommandValue() == 42 )
-            //     CNCSetup::toolRadiusCompensationRight();
+                //  CNCSetup::toolRadiusCompensationRight();
             else if( command.getCommandValue() == 43 )
-                letters_used = CNCSetup::setToolLengthOffset( command_line );
+                CNCSetup::setToolLengthOffset( command_line );
             else if( command.getCommandValue() == 49 )
                 CNCSetup::cancelToolLengthOffset();
 
@@ -219,9 +175,9 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
             // else if( command.getCommandValue() == 93 )
             //     CNCSetup::inverseTimeFeedRateMode();
             else if( command.getCommandValue() == 94 )
-                letters_used = CNCSetup::setFeedMode( FeedMode::feedPerMinute );
+                CNCSetup::setFeedMode( FeedMode::feedPerMinute );
             else if( command.getCommandValue() == 95 )
-                letters_used = CNCSetup::setFeedMode( FeedMode::feedPerRevolution );
+                CNCSetup::setFeedMode( FeedMode::feedPerRevolution );
             // else if( command.getCommandValue() == 96 )
             //     CNCSetup::constantSurfaceSpeed();
             // else if( command.getCommandValue() == 97 )
@@ -273,7 +229,7 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
             break;
 
         case 'F':
-            letters_used += CNCSetup::setFeedRate( command.getCommandValue() );
+            CNCSetup::setFeedRate( command.getCommandValue() );
             break;
         case 'S':
             std::cout << " Speed Set: " << command.getCommandValue() << std::endl;
@@ -289,7 +245,7 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
             std::cout << "TF is happening b- cncSetup execute()" << command.getCommandType() << command.getCommandValue() << std::endl;
     }
 
-    return letters_used;
+    return 0;
 }
 
 int CNCSetup::setFeedRate( double feedRate )

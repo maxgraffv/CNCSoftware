@@ -8,7 +8,7 @@ echo "\n\n"
 
 echo "repository pulling...\n"
 cd 
-cd ~/CNCSoftware/
+cd /home/max/CNCSoftware/
 git pull origin main
 cd
 echo "repository pulled\n"
@@ -21,4 +21,3 @@ echo "compiled\n"
 
 
 
-#removed splash from boot/firmware/cmdline.txt
