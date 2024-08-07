@@ -158,6 +158,7 @@ void program( std::vector<std::string> args, CNCSetup& myCNC)
             }
         }
 
+        std::cout << "moving by: " << x << " " << y << " " << z << std::endl;
         myCNC.feedrateMoveBy(f,x,y,z );
 
     }
