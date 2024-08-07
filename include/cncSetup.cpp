@@ -37,9 +37,9 @@ CNCSetup::CNCSetup(
             absolutePosX(0), absolutePosY(0), absolutePosZ(0), 
             arcDistanceMode(ArcDistanceMode::incremental),
             currentTool(0), 
-            machineCoordinates(CoordinateSystem(53, 0,0,0)), currentCoordinates( CoordinateSystem(53, 0,0,0) )
+            machineCoordinates(CoordinateSystem(53, 0,0,0)), currentCoordinates( CoordinateSystem(53, 0,0,0) ),
+            feedRate(0), feedRateMax(3000), spindleSpeed(0), toolLengthOffset(0)
 {
-    feedRateMax = 3000;
     coordinateSystems_set.insert( machineCoordinates );
     currentCoordinates = machineCoordinates;
 }
@@ -913,10 +913,6 @@ void CNCSetup::setCurrentCoordinateSystem( double coordinateSystemId)
         std::cout << "insert Offset Y: "; std::cin >> newOffsetY; std::cout << std::endl;
         std::cout << "insert Offset Z: "; std::cin >> newOffsetZ; std::cout << std::endl;
 
-        // newOffsetX = 70;
-        // newOffsetY = 150;
-        // newOffsetZ = 120;
-        
         CoordinateSystem newCoordinateSystem( coordinateSystemId, newOffsetX, newOffsetY, newOffsetZ );
 
         coordinateSystems_set.insert(newCoordinateSystem);

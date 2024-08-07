@@ -57,9 +57,6 @@ class CNCSetup
         ArcDistanceMode arcDistanceMode;
         PathMode pathMode;
 
-
-
-
         SpindleState spindleState;
         double spindleSpeed;
         double toolLengthOffset;
