@@ -104,6 +104,7 @@ void handleSIGTSTP( int signal )
     std::cout << "System shutdown..." << std::endl;
     cncSetupPTR->systemDisable();
     std::cout << "Shutdown COMPLETE" << std::endl;
+    std::exit(0);
 }
 
 void program( std::vector<std::string> args, CNCSetup& myCNC)
@@ -182,6 +183,7 @@ void program( std::vector<std::string> args, CNCSetup& myCNC)
     }
     if( args[0] == "quit" )
     {
+        cncSetupPTR->systemDisable();
         std::exit(0);
     }
 
