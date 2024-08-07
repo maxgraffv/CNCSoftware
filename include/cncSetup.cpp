@@ -37,8 +37,9 @@ CNCSetup::CNCSetup(
             absolutePosX(0), absolutePosY(0), absolutePosZ(0), 
             arcDistanceMode(ArcDistanceMode::incremental),
             currentTool(0), 
-            machineCoordinates(CoordinateSystem(53, 0,0,0)), currentCoordinates( CoordinateSystem(53, 0,0,0) ),
-            feedRate(0), feedRateMax(3000), spindleSpeed(0), toolLengthOffset(0)
+            machineCoordinates(CoordinateSystem(53, 0,0,0)),
+            currentCoordinates( CoordinateSystem(53, 0,0,0) ),
+            feedRate(0), feedRateMax(2500), spindleSpeed(0), toolLengthOffset(0)
 {
     coordinateSystems_set.insert( machineCoordinates );
     currentCoordinates = machineCoordinates;
@@ -72,8 +73,8 @@ void CNCSetup::process( std::vector< GCodeCommand >& command_line )
             execute( command_line );
 
         std::cout << "\rPos X: " << absolutePosX << "\t Pos Y: " << absolutePosY << "\t Pos Z: " << absolutePosZ
-        << "\t Feedrate: " << getFeedRate() << "[mm/min]\t Speed: " << getSpindleSpeed() << "[rpm]\t "
-         << std::flush;
+            << "\t Feedrate: " << getFeedRate() << "[mm/min]\t Speed: " << getSpindleSpeed() << "[rpm]\t " << "\t\t\t\t"
+            << std::flush;
     }
 
 }
@@ -586,6 +587,9 @@ void CNCSetup::feedrateMoveBy(double feedrate, double deltaX, double deltaY, dou
     double XtoD = deltaX/deltaD;
     double YtoD = deltaY/deltaD;
     double ZtoD = deltaZ/deltaD;
+
+    if(feedrate > feedRateMax)
+        setFeedRate(feedRateMax);
 
     double feedrateD = feedrate;
 
