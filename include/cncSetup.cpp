@@ -972,6 +972,12 @@ void CNCSetup::home()
 
 void CNCSetup::systemEnable()
 {
+
+    xAxisMotor.setDirection(MotorRotationDirection::CLOCKWISE);
+    yAxisMotor1.setDirection(MotorRotationDirection::CLOCKWISE);
+    yAxisMotor2.setDirection(MotorRotationDirection::CLOCKWISE);
+    zAxisMotor.setDirection(MotorRotationDirection::CLOCKWISE);
+
     xAxisMotor.enable();
     yAxisMotor1.enable();
     yAxisMotor2.enable();
@@ -984,5 +990,11 @@ void CNCSetup::systemDisable()
     yAxisMotor1.disable();
     yAxisMotor2.disable();
     zAxisMotor.disable();
+
+    xAxisMotor.setDirection(MotorRotationDirection::CLOCKWISE);
+    yAxisMotor1.setDirection(MotorRotationDirection::CLOCKWISE);
+    yAxisMotor2.setDirection(MotorRotationDirection::CLOCKWISE);
+    zAxisMotor.setDirection(MotorRotationDirection::CLOCKWISE);
+
     spindle.setSpeed(0);
 }
