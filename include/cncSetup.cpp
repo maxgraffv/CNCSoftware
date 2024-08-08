@@ -39,7 +39,7 @@ CNCSetup::CNCSetup(
             currentTool(0), 
             machineCoordinates(CoordinateSystem(53, 0,0,0)),
             currentCoordinates( CoordinateSystem(53, 0,0,0) ),
-            feedRate(0), feedRateMax(2500), spindleSpeed(0), toolLengthOffset(0)
+            feedRate(0), feedRateMax(1500), spindleSpeed(0), toolLengthOffset(0)
 {
     coordinateSystems_set.insert( machineCoordinates );
     currentCoordinates = machineCoordinates;
@@ -89,7 +89,7 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
     switch(command.getCommandType())
     {
         case 'N':
-            // std::cout << "Code Line: " << command.getCommandValue() << std::endl;
+                std::cout << "Code Line: " << command.getCommandValue() << std::endl;
             break;
         case 'G':
             if( command.getCommandValue() == 0 )
@@ -589,7 +589,10 @@ void CNCSetup::feedrateMoveBy(double feedrate, double deltaX, double deltaY, dou
     double ZtoD = deltaZ/deltaD;
 
     if(feedrate > feedRateMax)
+    {
         setFeedRate(feedRateMax);
+        feedrate = feedRateMax;
+    }
 
     double feedrateD = feedrate;
 
@@ -597,10 +600,10 @@ void CNCSetup::feedrateMoveBy(double feedrate, double deltaX, double deltaY, dou
     double feedrateY = abs( YtoD*feedrateD );
     double feedrateZ = abs( ZtoD*feedrateD );
 
-    std::thread t1( [&]{rotate( xAxisMotor, deltaX, feedrateX); } );
-    std::thread t2( [&]{rotate(yAxisMotor1, deltaY, feedrateY);} );
-    std::thread t3( [&]{rotate( yAxisMotor2, deltaY, feedrateY);} );
-    std::thread t4( [&]{rotate(zAxisMotor, deltaZ, feedrateZ);} );
+    std::thread t1( [&]{rotate( xAxisMotor, deltaX, feedrateX); });
+    std::thread t2( [&]{rotate(yAxisMotor1, deltaY, feedrateY); });
+    std::thread t3( [&]{rotate( yAxisMotor2, deltaY, feedrateY); });
+    std::thread t4( [&]{rotate(zAxisMotor, deltaZ, feedrateZ); });
 
     t1.join();
     t2.join();
@@ -619,35 +622,37 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
 {
     if(mmDistance < 0)
     {
-        mmDistance = abs( mmDistance );
+        mmDistance = abs(mmDistance) ;
         motor.setDirection( MotorRotationDirection::ANTICLOCKWISE );
+    }
+    else
+    {
+        motor.setDirection( MotorRotationDirection::CLOCKWISE );
     }
 
     double microstepsPerRevolution = 200* static_cast<int>(motor.getMicrosteps());
-    // std::cout << "motor id " << motor.getId() << " msteps/rev: " << microstepsPerRevolution << std::endl;
+    std::cout << "motor id " << motor.getId() << " msteps/rev: " << microstepsPerRevolution << std::endl;
     double revolutionsNeeded = mmDistance/motor.getLinearStep();
-    // std::cout << "motor id " << motor.getId() << " revs needed: " << revolutionsNeeded << std::endl;
+    std::cout << "motor id " << motor.getId() << " revs needed: " << revolutionsNeeded << std::endl;
     int microstepsNeeded = static_cast<int>( revolutionsNeeded*microstepsPerRevolution );
-    // std::cout << "motor id " << motor.getId() << " msteps needed: " << microstepsNeeded << std::endl;
+    std::cout << "motor id " << motor.getId() << " msteps needed: " << microstepsNeeded << std::endl;
 
     double mmPerMicrostep = motor.getLinearStep()/microstepsPerRevolution; //mm/microstep
-    // std::cout << "motor id " << motor.getId() << " mm/mstep: " << mmPerMicrostep << std::endl;
+    std::cout << "motor id " << motor.getId() << " mm/mstep: " << mmPerMicrostep << std::endl;
     double feedratePerMicrosec = axisFeedrate/60/1000000; // mm/microsec
-    // std::cout << "motor id " << motor.getId() << " f-rate/msec: " << feedratePerMicrosec << std::endl;
+    std::cout << "motor id " << motor.getId() << " f-rate/msec: " << feedratePerMicrosec << std::endl;
 
     double microsecsPerMicrostep = mmPerMicrostep / feedratePerMicrosec;
 
     // std::cout << "motor id " << motor.getId() << " msec/mstep: " << microsecsPerMicrostep << std::endl;
+    motor.setStepDelayMicrosec( static_cast<long>( microsecsPerMicrostep/2 ));
 
-    motor.setStepDelayMicrosec( static_cast<int>( microsecsPerMicrostep/2 ));
+    if( mmDistance != 0 )
+        std::cout << "Step Delay MicroSec: " << static_cast<long>( microsecsPerMicrostep/2) << std::endl;
 
-    // std::cout << "step going...";
+    if( mmDistance != 0 )
     for(int i = 0; i < microstepsNeeded; i++)
         motor.step();
-
-    // std::cout << " step done."<<std::endl;
-
-    motor.setDirection( MotorRotationDirection::CLOCKWISE );
 
 }
 
@@ -925,14 +930,10 @@ void CNCSetup::setCurrentCoordinateSystem( double coordinateSystemId)
     }
 }
 
-
-
-
 // void fakeFunc()
 // {
 //     std::cout << "ISR wow" << std::endl;
 // }
-
 
 void CNCSetup::home()
 {
