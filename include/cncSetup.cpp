@@ -39,7 +39,7 @@ CNCSetup::CNCSetup(
             currentTool(0), 
             machineCoordinates(CoordinateSystem(53, 0,0,0)),
             currentCoordinates( CoordinateSystem(53, 0,0,0) ),
-            feedRate(0), feedRateMax(1500), spindleSpeed(0), toolLengthOffset(0)
+            feedRate(0), feedRateMax(300), spindleSpeed(0), toolLengthOffset(0)
 {
     coordinateSystems_set.insert( machineCoordinates );
     currentCoordinates = machineCoordinates;
