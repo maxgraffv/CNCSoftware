@@ -623,11 +623,11 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
     if(mmDistance < 0)
     {
         mmDistance = abs(mmDistance) ;
-        motor.setDirection( MotorRotationDirection::ANTICLOCKWISE );
+        motor.setDirection( motor.getNegativeDirection() );
     }
     else
     {
-        motor.setDirection( MotorRotationDirection::CLOCKWISE );
+        motor.setDirection( motor.getPositiveDirection() );
     }
 
     double microstepsPerRevolution = 200* static_cast<int>(motor.getMicrosteps());

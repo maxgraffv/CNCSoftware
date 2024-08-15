@@ -12,7 +12,9 @@ StepperMotor::StepperMotor(int step_pin, int dir_pin, int en_pin,
 :step_pin(step_pin), dir_pin(dir_pin), en_pin(en_pin), 
 ms1_pin(ms1_pin), ms2_pin(ms2_pin), 
 microstepResolution(microstepResolution),
-rotationDirection(rotationDirection), linearStep(linearStep)
+positiveRotationDirection(rotationDirection), 
+currentRotationDirection(rotationDirection),
+linearStep(linearStep)
 {
     // Setup wiringPi
     if (wiringPiSetup() == -1) {
@@ -30,6 +32,12 @@ rotationDirection(rotationDirection), linearStep(linearStep)
     enable();
 
     setMicrosteps( microstepResolution );
+
+    if(positiveRotationDirection == MotorRotationDirection::CLOCKWISE)
+        negativeRotationDirection = MotorRotationDirection::ANTICLOCKWISE;
+    else
+        negativeRotationDirection = MotorRotationDirection::CLOCKWISE;
+
 }
 
 StepperMotor::~StepperMotor()
@@ -103,7 +111,17 @@ void StepperMotor::setDirection( MotorRotationDirection direction)
 
 MotorRotationDirection StepperMotor::getDirection()
 {
-    return rotationDirection;
+    return currentRotationDirection;
+}
+
+MotorRotationDirection StepperMotor::getPositiveDirection()
+{
+    return positiveRotationDirection;
+}
+
+MotorRotationDirection StepperMotor::getNegativeDirection()
+{
+    return negativeRotationDirection;
 }
 
 void StepperMotor::setStepDelayMicrosec( double microseconds )
