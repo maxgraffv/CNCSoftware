@@ -623,10 +623,11 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
     if(mmDistance < 0)
     {
         mmDistance = abs(mmDistance) ;
-        if(motor.getDirection() == MotorRotationDirection::CLOCKWISE)
-            motor.setDirection( MotorRotationDirection::ANTICLOCKWISE );
-        else
-            motor.setDirection( MotorRotationDirection::CLOCKWISE );
+        motor.setDirection( MotorRotationDirection::ANTICLOCKWISE );
+    }
+    else
+    {
+        motor.setDirection( MotorRotationDirection::CLOCKWISE );
     }
 
     double microstepsPerRevolution = 200* static_cast<int>(motor.getMicrosteps());
@@ -652,12 +653,6 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
     if( mmDistance != 0 )
     for(int i = 0; i < microstepsNeeded; i++)
         motor.step();
-
-    
-    if(motor.getDirection() == MotorRotationDirection::CLOCKWISE)
-        motor.setDirection( MotorRotationDirection::ANTICLOCKWISE );
-    else
-        motor.setDirection( MotorRotationDirection::CLOCKWISE );
 
 }
 
