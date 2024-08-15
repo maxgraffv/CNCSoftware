@@ -51,10 +51,10 @@ int main( int argc, char** argv )
     signal(SIGTSTP, handleSIGTSTP);
     signal(SIGINT, handleSIGTSTP);
 
-    StepperMotor motorAxisX( GPIO17 , GPIO27 , GPIO22, GPIO14, GPIO15, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::ANTICLOCKWISE , 2);
+    StepperMotor motorAxisX( GPIO17 , GPIO27 , GPIO22, GPIO14, GPIO15, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::ANTICLOCKWISE , 8);
     StepperMotor motorAxisY_1(GPIO23 , GPIO24, GPIO10, GPIO9, GPIO11, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 8);
     StepperMotor motorAxisY_2( GPIO25, GPIO8, GPIO7, GPIO5, GPIO6, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 8);
-    StepperMotor motorAxisZ( GPIO13, GPIO19, GPIO16, GPIO26, GPIO20, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 8);
+    StepperMotor motorAxisZ( GPIO13, GPIO19, GPIO16, GPIO26, GPIO20, MicrostepResolution::EIGHTH_STEP, MotorRotationDirection::CLOCKWISE, 2);
     Spindle spindle(GPIO18, GPIO4);
 
     LimitSwitch limitSwitchX(GPIO21);
