@@ -144,5 +144,9 @@ std::vector<ArcPath::Point> ArcPath::generate(  double start_x, double start_y, 
         }
         path.push_back(point);
     }
+
+    for(int i = 0; i < path.size(); i++)
+        std::cout << "PATH: \t X: " << path[i].x << "\t Y: " << path[i].y << " \t Z:" << path[i].z << std::endl;
+
     return path;
 }
