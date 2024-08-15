@@ -114,7 +114,7 @@ std::vector<ArcPath::Point> ArcPath::generate(  double start_x, double start_y, 
     int resolution = static_cast<int>( pathLength/0.1 );
     if((resolution - 1) == 0)
     {
-        std::cout << "ERROR HUGE F" << std::endl;
+        // std::cout << "ERROR HUGE F" << std::endl;
         resolution += 1;
     }
 
@@ -122,10 +122,6 @@ std::vector<ArcPath::Point> ArcPath::generate(  double start_x, double start_y, 
 
     double moveByAngle = 0;
 
-    std::cout << "ARC GOOD???!!! Angle: "<< angle << std::endl;
-    std::cout << "ARC GOOD???!!! CirclePercent: "<< partOfCircle << std::endl;
-    std::cout << "ARC GOOD???!!! PTH LEN: "<< pathLength << std::endl;
-    std::cout << "ARC GOOD???!!! RES: "<< resolution << std::endl;
 
     for(int i = 0; i < resolution; i++)
     {
@@ -153,9 +149,6 @@ std::vector<ArcPath::Point> ArcPath::generate(  double start_x, double start_y, 
         }
         path.push_back(point);
     }
-
-    for(int i = 0; i < path.size(); i++)
-        std::cout << "PATH: \t X: " << path[i].x << "\t Y: " << path[i].y << " \t Z:" << path[i].z << std::endl;
 
     return path;
 }
