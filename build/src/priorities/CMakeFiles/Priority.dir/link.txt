@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libPriority.a CMakeFiles/Priority.dir/GPriority.cpp.o CMakeFiles/Priority.dir/MPriority.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libPriority.a

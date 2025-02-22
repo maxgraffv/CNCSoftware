@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libGcodeCommand.a CMakeFiles/GcodeCommand.dir/gcodeCommand.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libGcodeCommand.a

@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libSpindle.a CMakeFiles/Spindle.dir/spindle.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libSpindle.a

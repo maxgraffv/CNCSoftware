@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libStepperMotor.a CMakeFiles/StepperMotor.dir/stepperMotor.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libStepperMotor.a

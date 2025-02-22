@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libArcPathGenerator.a CMakeFiles/ArcPathGenerator.dir/arcPathGenerator.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libArcPathGenerator.a

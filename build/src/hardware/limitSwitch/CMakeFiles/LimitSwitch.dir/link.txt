@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libLimitSwitch.a CMakeFiles/LimitSwitch.dir/LimitSwitch.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libLimitSwitch.a
