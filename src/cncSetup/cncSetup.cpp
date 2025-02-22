@@ -1,7 +1,5 @@
 #include <vector>
-#include "stepperMotor.h"
 #include "cncSetup.h"
-#include "gcodeFile.h"
 #include "motionTypeEnum.h"
 #include "motionPlaneEnum.h"
 #include "unitsEnum.h"

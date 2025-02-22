@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libWiringMac.a CMakeFiles/WiringMac.dir/wiringMac.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libWiringMac.a

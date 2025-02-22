@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libCoordinateSystem.a CMakeFiles/CoordinateSystem.dir/CoordinateSystem.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libCoordinateSystem.a

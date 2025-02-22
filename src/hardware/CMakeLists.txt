@@ -1,0 +1,5 @@
+add_subdirectory(motor)
+add_subdirectory(limitSwitch)
+add_subdirectory(spindle)
+add_subdirectory(stepperMotor)
+add_subdirectory(tool)

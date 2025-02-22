@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libCNCSetup.a CMakeFiles/CNCSetup.dir/cncSetup.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libCNCSetup.a
