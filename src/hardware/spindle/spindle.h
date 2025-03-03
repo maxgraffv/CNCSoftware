@@ -4,8 +4,9 @@
 #include "motor.h"
 #include "MotorRotationDirectionEnum.h"
 
-#ifdef __APPLE__
-    #include "wiringMac.h"
+
+#if !defined(__arm__) || !defined(__linux__)   // __APPLE__
+#include "wiringMac.h"  // This will be included if NOT on Raspberry Pi
 #else
     #include <wiringPi.h>
 #endif

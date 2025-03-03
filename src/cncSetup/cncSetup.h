@@ -93,7 +93,7 @@ class CNCSetup
         void arcMoveTo( double X, double Y, double Z, double I, double J, double K);
 
         void run( GCodeFile &gcodeFile );
-        int execute( std::vector< GCodeCommand >& command_line );
+        int execute_line( std::vector< GCodeCommand >& command_line );
 
         void process( std::vector< GCodeCommand >& command_line );
 
@@ -101,6 +101,8 @@ class CNCSetup
 
         int programPause();
         int programStop();
+        void optionalStop();
+        void programEnd();
 
         int setNewTool( double newToolId );
         Tool getTool();
@@ -144,6 +146,8 @@ class CNCSetup
         int toolChange();
 
         void setCurrentCoordinateSystem( double coordinateSystemId );
+
+        void setCoolant(int state);
 
         void systemEnable();
         void systemDisable();

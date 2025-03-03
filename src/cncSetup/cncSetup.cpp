@@ -43,9 +43,13 @@ CNCSetup::CNCSetup(
     currentCoordinates = machineCoordinates;
 }
 
+/*
+    RUN GCodeFile
+*/
 void CNCSetup::run( GCodeFile &gcodeFile )
 {
     systemEnable();
+
     std::vector< std::vector< GCodeCommand> > command_vec 
         = gcodeFile.getCommand_vec();
 
@@ -68,7 +72,7 @@ void CNCSetup::process( std::vector< GCodeCommand >& command_line )
         if( !containsCodeType(command_line, 'G') && command_line[0].getPriority() == 23 )
             CNCSetup::setMotionType(getMotionType(), command_line); //makes a motion of a type set beforehand
         else
-            execute( command_line );
+            execute_line( command_line );
 
         std::cout << "\rPos X: " << absolutePosX << "\t Pos Y: " << absolutePosY << "\t Pos Z: " << absolutePosZ
             << "\t Feedrate: " << getFeedRate() << "[mm/min]\t Speed: " << getSpindleSpeed() << "[rpm]\t " << "\t\t\t\t"
@@ -78,7 +82,7 @@ void CNCSetup::process( std::vector< GCodeCommand >& command_line )
 }
 
 
-int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
+int CNCSetup::execute_line( std::vector< GCodeCommand >& command_line )
 {
     GCodeCommand command = command_line[0];
 
@@ -150,10 +154,10 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
         case 'M':
             if( command.getCommandValue() == 0 )
                 CNCSetup::programPause();
-            // else if( command.getCommandValue() == 1 )
-            //     CNCSetup::optionalStop();
-            // else if( command.getCommandValue() == 2 )
-            //     CNCSetup::programEnd();
+            else if( command.getCommandValue() == 1 )
+                CNCSetup::optionalStop();
+            else if( command.getCommandValue() == 2 )
+                CNCSetup::programEnd();
             else if( command.getCommandValue() == 3 )
                 CNCSetup::setSpindleState(SpindleState::ONClockwise, command_line );
             else if( command.getCommandValue() == 4 )
@@ -162,12 +166,14 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
                 CNCSetup::setSpindleState(SpindleState::OFF, command_line );
             else if( command.getCommandValue() == 6 )
                 CNCSetup::toolChange();
-            // else if( command.getCommandValue() == 7 )
-            //     CNCSetup::mistCoolantOn();
-            // else if( command.getCommandValue() == 8 )
-            //     CNCSetup::floodCoolantOn();
-            // else if( command.getCommandValue() == 9 )
-            //     CNCSetup::coolantOff();
+            
+            else if( command.getCommandValue() == 7 ||
+                        command.getCommandValue() == 8 ||
+                        command.getCommandValue() == 9 
+                    )
+                    {
+                        setCoolant(command.getCommandValue())
+                    }
             else if( command.getCommandValue() == 30 )
                 CNCSetup::programStop();
             else
@@ -175,13 +181,13 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
             break;
 
         case 'F':
-            CNCSetup::setFeedRate( command.getCommandValue() );
+            setFeedRate( command.getCommandValue() );
             break;
         case 'S':
             setSpindleSpeed(command.getCommandValue());
             break;
         case 'T':
-            CNCSetup::setNewTool( command.getCommandValue() );
+            setNewTool( command.getCommandValue() );
             break;
         case 'H':
 
@@ -579,6 +585,21 @@ int CNCSetup::programPause()
     return 0;
 }
 
+
+void CNCSetup::optionalStop()
+{
+
+}
+
+void CNCSetup::programEnd()
+{
+
+}
+
+
+
+
+
 MotionTypeEnum CNCSetup::getMotionType()
 {
     return motionType;
@@ -878,6 +899,24 @@ void CNCSetup::home()
         rotate(xAxisMotor, -0.04, 8000);
         switchZVal = digitalRead(limitSwitchZ.getPin());
     }
+}
+
+void CNCSetup::setCoolant(int state)
+{
+    switch(state)
+    {
+        case 7:
+            std::cout << "Coolant Off" << std::endl;
+            break;
+        case 8:
+            std::cout << "Coolant Off" << std::endl;
+            break;
+        case 9:
+            std::cout << "Coolant Off" << std::endl;
+            break;
+    }
+
+
 }
 
 void CNCSetup::systemEnable()

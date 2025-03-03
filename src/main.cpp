@@ -39,6 +39,7 @@ sudo reboot
 */
 
 
+
 void program( std::vector<std::string> args, CNCSetup& myCNC);
 
 void handleSIGTSTP(int signal);
@@ -66,6 +67,7 @@ int main( int argc, char** argv )
 
     CNCSetup myCNC( motorAxisX, motorAxisY_1, motorAxisY_2, motorAxisZ, spindle,
         limitSwitchX, limitSwitchY, limitSwitchZ, limitSwitchT, Units::milimeter );
+
     cncSetupPTR = &myCNC; //for program exit handling SIGTSTP
 
 
