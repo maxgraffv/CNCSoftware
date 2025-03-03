@@ -114,18 +114,6 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
                 CNCSetup::setUnits( Units::milimeter );
             else if( command.getCommandValue() == 28 )
                 CNCSetup::home();
-            // else if( command.getCommandValue() == 30 )
-            //     CNCSetup::returnSecondaryHome();
-            // else if( command.getCommandValue() == 38.2 )
-            //     CNCSetup::straightProbe();
-            // else if( command.getCommandValue() == 40 )
-            //     CNCSetup::cancelCutterRadiusCompensation();
-            // else if( command.getCommandValue() == 41 )
-            //     CNCSetup::toolRadiusCompensationLeft();
-            // else if( command.getCommandValue() == 42 )
-            //     CNCSetup::toolRadiusCompensationRight();
-            // else if( command.getCommandValue() == 43 )
-                //  CNCSetup::toolRadiusCompensationRight();
             else if( command.getCommandValue() == 43 )
                 CNCSetup::setToolLengthOffset( command_line );
             else if( command.getCommandValue() == 49 )
@@ -136,36 +124,12 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
 
             else if( command.getCommandValue() >=54 && command.getCommandValue() < 60 )
                 CNCSetup::setCurrentCoordinateSystem( command.getCommandValue() );
-
-
             else if( command.getCommandValue() == 61 )
                 CNCSetup::setPathMode( PathMode::Exact, command_line );
             else if( command.getCommandValue() == 61.1 )
                 CNCSetup::setPathMode( PathMode::ExactStop, command_line );
             else if( command.getCommandValue() == 64 )
                 CNCSetup::setPathMode( PathMode::Blending, command_line );
-            // else if( command.getCommandValue() == 76 )
-            //     CNCSetup::threadCuttingCycle();
-            // else if( command.getCommandValue() == 80 )
-            //     CNCSetup::cancelMotionMode();
-            // else if( command.getCommandValue() == 81 )
-            //     CNCSetup::simpleDrillingCycle();
-            // else if( command.getCommandValue() == 82 )
-            //     CNCSetup::drillingCycleWithDwell();
-            // else if( command.getCommandValue() == 83 )
-            //     CNCSetup::peckDrillingCycle();
-            // else if( command.getCommandValue() == 84 )
-            //     CNCSetup::tappingCycle();
-            // else if( command.getCommandValue() == 85 )
-            //     CNCSetup::boringCycle();
-            // else if( command.getCommandValue() == 86 )
-            //     CNCSetup::boringCycleSpindleStop();
-            // else if( command.getCommandValue() == 87 )
-            //     CNCSetup::backBoringCycle();
-            // else if( command.getCommandValue() == 88 )
-            //     CNCSetup::boringCycleManualRetraction();
-            // else if( command.getCommandValue() == 89 )
-            //     CNCSetup::boringCycleWithDwell();
             else if( command.getCommandValue() == 90 )
                 CNCSetup::setDistanceMode(DistanceMode::absoluteDistance);
             else if( command.getCommandValue() == 90.1 )
@@ -174,24 +138,12 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
                 CNCSetup::setDistanceMode(DistanceMode::incrementalDistance);
             else if( command.getCommandValue() == 91.1 )
                 CNCSetup::setArcDistanceMode( ArcDistanceMode::incremental );
-            // else if( command.getCommandValue() == 92 )
-            //     CNCSetup::setCurrentPositionToCoordinatesGiven();
-            // else if( command.getCommandValue() == 93 )
-            //     CNCSetup::inverseTimeFeedRateMode();
             else if( command.getCommandValue() == 94 )
                 CNCSetup::setFeedMode( FeedMode::feedPerMinute );
             else if( command.getCommandValue() == 95 )
                 CNCSetup::setFeedMode( FeedMode::feedPerRevolution );
-            // else if( command.getCommandValue() == 96 )
-            //     CNCSetup::constantSurfaceSpeed();
-            // else if( command.getCommandValue() == 97 )
-            //     CNCSetup::cancelConstantSurfaceSpeed();
-            // else if( command.getCommandValue() == 98 )
-            //     CNCSetup::returnToInitialLevelCannedCycles();
-            // else if( command.getCommandValue() == 99 )
-            //     CNCSetup::returnToRPointInCannedCycles();
             else
-                std::cout << " UNKNOWN G-Code Value - unable to execute() " << command.getCommandValue() << std::endl;
+                std::cout << " UNKNOWN G-Code Value - unable to execute() G" << command.getCommandValue() << std::endl;
 
             break;
 
@@ -218,16 +170,6 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
             //     CNCSetup::coolantOff();
             else if( command.getCommandValue() == 30 )
                 CNCSetup::programStop();
-            // else if( command.getCommandValue() == 48 )
-            //     CNCSetup::enableSpeedFeedOverride();
-            // else if( command.getCommandValue() == 49 )
-            //     CNCSetup::disableSpeedFeedOverride();
-            // else if( command.getCommandValue() == 60 )
-            //     CNCSetup::palletChange();
-            // else if( command.getCommandValue() == 98 )
-            //     CNCSetup::subprogramCall();
-            // else if( command.getCommandValue() == 99 )
-            //     CNCSetup::returnFromSubprogramOrEndProgram();
             else
             std::cout << " UNKNOWN M-Code Value - unable to execute() " << command.getCommandValue() << std::endl;
             break;
@@ -254,9 +196,7 @@ int CNCSetup::execute( std::vector< GCodeCommand >& command_line )
 int CNCSetup::setFeedRate( double feedRate )
 {
     this->feedRate = feedRate;
-    // std::cout << "Feedrate set to: " << feedRate << std::endl;
     return 0;
-
 }
 
 double CNCSetup::getFeedRate()
@@ -303,7 +243,6 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
             letters_used++;
             i--;
             commandLineSize--;
-            // std::cout << "X";
         }else
 
         if(command_line[i].getCommandType() == 'Y')
@@ -313,7 +252,6 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
             letters_used++;
             i--;
             commandLineSize--;
-            // std::cout << "Y";
         }else
 
         if(command_line[i].getCommandType() == 'Z')
@@ -323,8 +261,6 @@ int CNCSetup::setMotionType( MotionTypeEnum motionType, std::vector<GCodeCommand
             letters_used++;
             i--;
             commandLineSize--;
-            // std::cout << "Z";
-
         }
     }
 
@@ -433,15 +369,9 @@ void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< G
                     deltaZ = newZ - currentZ;
 
                     feedrateMoveBy(feedRateMax,deltaX, deltaY, deltaZ);
-                    // absolutePosX += deltaX;
-                    // absolutePosY += deltaY;
-                    // absolutePosZ += deltaZ;
                     break;
                 case DistanceMode::incrementalDistance :
                     feedrateMoveBy(feedRateMax, newX, newY, newZ);
-                    // absolutePosX += newX;
-                    // absolutePosY += newY;
-                    // absolutePosZ += newZ;
                     break;
             }
             break;
@@ -455,17 +385,9 @@ void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< G
                     deltaZ = newZ - currentZ;
 
                     feedrateMoveBy(this->feedRate,deltaX, deltaY, deltaZ);
-
-                    // absolutePosX += deltaX;
-                    // absolutePosY += deltaY;
-                    // absolutePosZ += deltaZ;
-
                     break;
                 case DistanceMode::incrementalDistance :
                     feedrateMoveBy(this->feedRate, newX, newY, newZ);
-                    // absolutePosX += newX;
-                    // absolutePosY += newY;
-                    // absolutePosZ += newZ;
                     break;
             }
             break;
@@ -570,11 +492,6 @@ void CNCSetup::arcMoveTo( double absoluteFinalX, double absoluteFinalY, double a
         delta_z = arc_vec[i].z - (absolutePosZ - currentCoordinates.offsetZ);
 
         feedrateMoveBy( getFeedRate(), delta_x, delta_y, delta_z );
-
-        // absolutePosX += delta_x;
-        // absolutePosY += delta_y;
-        // absolutePosZ += delta_z;
-
     }
 }
 
@@ -611,9 +528,6 @@ void CNCSetup::feedrateMoveBy(double feedrate, double deltaX, double deltaY, dou
     absolutePosX += deltaX;
     absolutePosY += deltaY;
     absolutePosZ += deltaZ;
-
-    // std::cout << "x" << absolutePosX << "y" << absolutePosY << "z" << absolutePosZ << std::endl;
-
 }
 
 void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrate)
@@ -629,20 +543,13 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
     }
 
     double microstepsPerRevolution = 200* static_cast<int>(motor.getMicrosteps());
-    std::cout << "motor id " << motor.getId() << " msteps/rev: " << microstepsPerRevolution << std::endl;
     double revolutionsNeeded = mmDistance/motor.getLinearStep();
-    std::cout << "motor id " << motor.getId() << " revs needed: " << revolutionsNeeded << std::endl;
     int microstepsNeeded = static_cast<int>( revolutionsNeeded*microstepsPerRevolution );
-    std::cout << "motor id " << motor.getId() << " msteps needed: " << microstepsNeeded << std::endl;
 
     double mmPerMicrostep = motor.getLinearStep()/microstepsPerRevolution; //mm/microstep
-    std::cout << "motor id " << motor.getId() << " mm/mstep: " << mmPerMicrostep << std::endl;
     double feedratePerMicrosec = axisFeedrate/60/1000000; // mm/microsec
-    std::cout << "motor id " << motor.getId() << " f-rate/msec: " << feedratePerMicrosec << std::endl;
 
     double microsecsPerMicrostep = mmPerMicrostep / feedratePerMicrosec;
-
-    // std::cout << "motor id " << motor.getId() << " msec/mstep: " << microsecsPerMicrostep << std::endl;
     motor.setStepDelayMicrosec( static_cast<long>( microsecsPerMicrostep/2 ));
 
     if( mmDistance != 0 )
