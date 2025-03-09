@@ -80,7 +80,7 @@ int main( int argc, char** argv )
         case 1:
             while(true)
             {
-                std::cout << "GraffOS ";
+                std::cout << "cncOS ";
 
                 std::getline(std::cin, line); 
                 stream = std::istringstream(line);

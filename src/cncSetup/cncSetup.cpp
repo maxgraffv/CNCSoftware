@@ -172,7 +172,7 @@ int CNCSetup::execute_line( std::vector< GCodeCommand >& command_line )
                         command.getCommandValue() == 9 
                     )
                     {
-                        setCoolant(command.getCommandValue())
+                        setCoolant(command.getCommandValue());
                     }
             else if( command.getCommandValue() == 30 )
                 CNCSetup::programStop();
