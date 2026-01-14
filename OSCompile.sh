@@ -1,3 +1,3 @@
 #!/bin/bash
 
-g++ /home/max/CNCSoftware/include/*.cpp -o /home/max/GraffOS -lwiringPi -std=c++20
+g++ ~/CNCSoftware/include/*.cpp -o ~/cncOS -lwiringPi -std=c++20
