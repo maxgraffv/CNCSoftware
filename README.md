@@ -1,4 +1,4 @@
-# GraffOS — CNC Machine Controller
+#cncOS — CNC Machine Controller
 
 A real-time CNC controller written in C++20 for a 3-axis (XYZ) router/mill running on a **Raspberry Pi 3**. Reads industry-standard G-code (`.ngc`) files and drives stepper motors and a spindle via GPIO using the WiringPi library.
 
