@@ -30,11 +30,11 @@ void GCodeFile::semicolonCommentsRemove()
     for( int i = 0; i < comment_semicolon_count; i++)
     {
         
-        for(int j = 0; j < gcodeStr.size(); j++)
+        for(int j = 0; j < (int)gcodeStr.size(); j++)
         {
             if( gcodeStr[j] == comment_semicolon_begin )
             {
-                for( int k = j; k < gcodeStr.size(); k++ )
+                for( int k = j; k < (int)gcodeStr.size(); k++ )
                 {
                     if( gcodeStr[k] == comment_semicolon_end)                    
                     {
@@ -56,8 +56,8 @@ void GCodeFile::parenthesisCommentsRemove_byPair()
     int left_parenthesis_count = std::ranges::count( gcodeStr, '(' );
     int right_parenthesis_count = std::ranges::count( gcodeStr, ')' );
 
-    int left_parenthesis_index = gcodeStr.find_first_of('(');
-    int right_parenthesis_index = gcodeStr.find_first_of(')');
+    size_t left_parenthesis_index = gcodeStr.find_first_of('(');
+    size_t right_parenthesis_index = gcodeStr.find_first_of(')');
 
     if( left_parenthesis_count != right_parenthesis_count )
         std::cout << "ERROR - Comments parenthessis ( ) are of different number - file not valid" << std::endl;
@@ -65,12 +65,12 @@ void GCodeFile::parenthesisCommentsRemove_byPair()
     {
        for( int i = 0; i < left_parenthesis_count; i++ )
        {
-            for( int j = 0; j < gcodeStr.size(); j++ )
+            for( int j = 0; j < (int)gcodeStr.size(); j++ )
             {
                 if( gcodeStr[j] == '(' )
                 {
                     left_parenthesis_index = j;
-                    for( int k = j; k < gcodeStr.size(); k++)
+                    for( int k = j; k < (int)gcodeStr.size(); k++)
                     {
                         if( gcodeStr[k] == '(' )
                         {
@@ -104,8 +104,8 @@ void GCodeFile::parenthesisCommentsRemove()
     int left_parenthesis_count = std::ranges::count( gcodeStr, '(' );
     int right_parenthesis_count = std::ranges::count( gcodeStr, ')' );
 
-    int left_parenthesis_index = gcodeStr.find_first_of('(');
-    int right_parenthesis_index = gcodeStr.find_first_of(')');
+    size_t left_parenthesis_index = gcodeStr.find_first_of('(');
+    size_t right_parenthesis_index = gcodeStr.find_first_of(')');
 
     
 
@@ -121,7 +121,7 @@ void GCodeFile::parenthesisCommentsRemove()
 void GCodeFile::whiteSpacesRemove()
 {
 
-    for( int i = 0; i < gcodeStr.size(); i++)
+    for( int i = 0; i < (int)gcodeStr.size(); i++)
     {
         if(gcodeStr[i] == 0x20 || // Spaces
         
@@ -135,7 +135,7 @@ void GCodeFile::whiteSpacesRemove()
         }
     }
 
-    for( int i = 1; i < gcodeStr.size(); i++)
+    for( int i = 1; i < (int)gcodeStr.size(); i++)
     {
         if( gcodeStr[i] == 0x0A && gcodeStr[i-1] == 0x0A)
         {
@@ -150,7 +150,7 @@ void GCodeFile::printGCodeStr()
 {
     std::string border(20, '#');
     std::cout << border << std::endl;
-    for( int i = 0; i < gcodeStr.size(); i++ )
+    for( int i = 0; i < (int)gcodeStr.size(); i++ )
     {
         std::cout << gcodeStr[i];
     }
@@ -159,7 +159,7 @@ void GCodeFile::printGCodeStr()
 
 void GCodeFile::removePercentSign()
 {
-    for( int i = 0; i < gcodeStr.size()-1; i++)
+    for( int i = 0; gcodeStr.size() > 1 && i < (int)gcodeStr.size()-1; i++)
     {
         if( gcodeStr[i] == '%' && gcodeStr[i+1] == 0x0A)
         {
@@ -186,7 +186,7 @@ void GCodeFile::toCommandLines()
 
     std::string line("");
 
-    for(int i = 0; i < gcodeStr.size(); i++)
+    for(int i = 0; i < (int)gcodeStr.size(); i++)
     {
         if( gcodeStr[i] == '\n')
         {
@@ -197,7 +197,7 @@ void GCodeFile::toCommandLines()
             line += gcodeStr[i];
     }
 
-    // for(int i = 0; i < commandLines.size(); i++)
+    // for(int i = 0; i < (int)commandLines.size(); i++)
     //     std::cout << "line num: " << i << " " << commandLines[i] << std::endl;
 
 }
@@ -210,10 +210,10 @@ void GCodeFile::parse()
     std::string input("");
     std::string current;
 
-    for(int i = 0; i < commandLines.size(); i++)
+    for(int i = 0; i < (int)commandLines.size(); i++)
     {
         input = commandLines[i];
-        for (int j = 0; j < input.length(); j++) {
+        for (int j = 0; j < (int)input.length(); j++) {
             char c = input[j];
 
             // If the character is an uppercase letter and current is not empty, push current to result
@@ -244,9 +244,9 @@ void GCodeFile::parse()
 
 void GCodeFile::printCommands()
 {
-        for( int i = 0; i < command_vec.size(); i++)
+        for( int i = 0; i < (int)command_vec.size(); i++)
         {
-            for(int j = 0; j < command_vec[i].size(); j++)
+            for(int j = 0; j < (int)command_vec[i].size(); j++)
                 std::cout << command_vec[i][j].getPriority() << "[" << command_vec[i][j].getCommandType() << "]("<<command_vec[i][j].getCommandValue() << ") ";
             std::cout << std::endl;
         }
@@ -260,7 +260,7 @@ std::vector< std::vector< GCodeCommand> > GCodeFile::getCommand_vec()
 
 void GCodeFile::sortByPriority()
 {
-    for(int i = 0; i < command_vec.size(); i++)
+    for(int i = 0; i < (int)command_vec.size(); i++)
     {
         std::ranges::sort(command_vec[i], {}, &GCodeCommand::getPriority);
     }

@@ -2,7 +2,7 @@
 #include "Tool.h"
 
 
-Tool::Tool( double toolId ):id(toolId)
+Tool::Tool( double toolId ):id(toolId), toolLengthOffset(0.0)
 {
     // std::cout << "created tool " << id << std::endl;
 }

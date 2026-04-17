@@ -98,7 +98,7 @@ int main( int argc, char** argv )
     return 0;
 }
 
-void handleSIGTSTP( int signal )
+void handleSIGTSTP( [[maybe_unused]] int signal )
 {
     std::cout << "Program Stopped Unexpectedly" << std::endl;
     std::cout << "System shutdown..." << std::endl;
@@ -112,6 +112,7 @@ void program( std::vector<std::string> args, CNCSetup& myCNC)
 
     if( args[0] == "run" )
     {
+        if( args.size() < 2 ) { std::cout << "Usage: run <gcode_file>" << std::endl; return; }
         GCodeFile operation1( args[1] );
         myCNC.run(operation1);
     }
@@ -129,32 +130,23 @@ void program( std::vector<std::string> args, CNCSetup& myCNC)
         double z = 0;
 
         std::string word;
-        for(int i = 1; i < args.size(); i++)
+        for(int i = 1; i < (int)args.size(); i++)
         {
-            if(args[i][0] == '-' && args[i][1] == 'x')
-            {
+            if( args[i].size() < 3 ) { std::cout << "Error: flag too short: " << args[i] << std::endl; break; }
+            try {
                 word = std::string( args[i].begin()+2, args[i].end() );
-                x = std::stod(word);
-            }
-            else if(args[i][0] == '-' && args[i][1] == 'y')
-            {
-                word = std::string( args[i].begin()+2, args[i].end() );
-                y = std::stod(word);
-            }
-            else if(args[i][0] == '-' && args[i][1] == 'z')
-            {
-                word = std::string( args[i].begin()+2, args[i].end() );
-                z = std::stod(word);
-            }
-            else if(args[i][0] == '-' && args[i][1] == 'f')
-            {
-                word = std::string( args[i].begin()+2, args[i].end() );
-                f = std::stod(word);
-            }
-            else
-            {
-                std::cout << "Error: unknown flag" << std::endl;
-                break;
+                if(args[i][0] == '-' && args[i][1] == 'x')
+                    x = std::stod(word);
+                else if(args[i][0] == '-' && args[i][1] == 'y')
+                    y = std::stod(word);
+                else if(args[i][0] == '-' && args[i][1] == 'z')
+                    z = std::stod(word);
+                else if(args[i][0] == '-' && args[i][1] == 'f')
+                    f = std::stod(word);
+                else
+                { std::cout << "Error: unknown flag" << std::endl; break; }
+            } catch( const std::invalid_argument& ) {
+                std::cout << "Error: invalid number: " << word << std::endl; break;
             }
         }
 

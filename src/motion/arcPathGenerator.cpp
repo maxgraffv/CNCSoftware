@@ -21,9 +21,6 @@ std::vector<ArcPath::Point> ArcPath::generate(  double start_x, double start_y, 
     switch( distanceMode )
     {
         case DistanceMode::absoluteDistance :
-            end_x = end_x;
-            end_y = end_y;
-            end_z = end_z;
             break;
 
         case DistanceMode::incrementalDistance :

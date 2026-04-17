@@ -31,15 +31,17 @@ CNCSetup::CNCSetup(
         Units units = Units::milimeter) 
         : xAxisMotor(xAxisMotor), yAxisMotor1(yAxisMotor1),
             yAxisMotor2(yAxisMotor2), zAxisMotor(zAxisMotor),
-            spindle(spindle), units(units),
+            spindle(spindle),
             limitSwitchX(lSwitchX), limitSwitchY(lSwitchY),
             limitSwitchZ(lSwitchZ), limitSwitchT(lSwitchT),
-            absolutePosX(0), absolutePosY(0), absolutePosZ(0), 
-            arcDistanceMode(ArcDistanceMode::incremental),
-            currentTool(0), 
+            units(units),
+            absolutePosX(0), absolutePosY(0), absolutePosZ(0),
+            currentCoordinates(CoordinateSystem(53, 0,0,0)),
             machineCoordinates(CoordinateSystem(53, 0,0,0)),
-            currentCoordinates( CoordinateSystem(53, 0,0,0) ),
-            feedRate(0), feedRateMax(1800), spindleSpeed(0), toolLengthOffset(0)
+            feedRate(0), feedRateMax(1800),
+            currentTool(0),
+            arcDistanceMode(ArcDistanceMode::incremental),
+            spindleSpeed(0), toolLengthOffset(0)
 {
     coordinateSystems_set.insert( machineCoordinates );
     currentCoordinates = machineCoordinates;
@@ -51,7 +53,7 @@ void CNCSetup::run( GCodeFile &gcodeFile )
     std::vector< std::vector< GCodeCommand> > command_vec 
         = gcodeFile.getCommand_vec();
 
-    for( int i = 0; i < command_vec.size(); i++ )
+    for( int i = 0; i < (int)command_vec.size(); i++ )
     {
         process( command_vec[i] );
     }
@@ -62,9 +64,6 @@ void CNCSetup::run( GCodeFile &gcodeFile )
 
 void CNCSetup::process( std::vector< GCodeCommand >& command_line )
 {
-    int letter_count = command_line.size();
-
-
     while( !command_line.empty() )
     {
         if( !containsCodeType(command_line, 'G') && command_line[0].getPriority() == 23 )
@@ -279,7 +278,7 @@ std::vector<double> CNCSetup::getAbsolutePos()
 bool containsCodeType(std::vector< GCodeCommand > command_vec, char c)
 {
     bool contains = false;
-    for(int i = 0; i < command_vec.size(); i++)
+    for(int i = 0; i < (int)command_vec.size(); i++)
         if( command_vec[i].getCommandType() == c )
             contains = true;
 
@@ -357,59 +356,12 @@ void CNCSetup::move(double X, double Y, double Z, std::vector< GCodeCommand>& co
 
 void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< GCodeCommand>& command_line)
 {
-    int A = 0;
-    int B = 0;
-    int C = 0;
-    int U = 0;
-    int V = 0;
-    int W = 0;
-
-    int commandLineSize = command_line.size();
+    int commandLineSize = (int)command_line.size();
     for( int i = 0; i < commandLineSize; i++)
     {
-        if(command_line[i].getCommandType() == 'A')
+        char t = command_line[i].getCommandType();
+        if(t == 'A' || t == 'B' || t == 'C' || t == 'U' || t == 'V' || t == 'W')
         {
-            A = command_line[i].getCommandValue();
-            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
-            i--;
-            commandLineSize--;
-        }else
-
-        if(command_line[i].getCommandType() == 'B')
-        {
-            B = command_line[i].getCommandValue();
-            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
-            i--;
-            commandLineSize--;
-        }else
-
-        if(command_line[i].getCommandType() == 'C')
-        {
-            C = command_line[i].getCommandValue();
-            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
-            i--;
-            commandLineSize--;
-        }else
-        
-        if(command_line[i].getCommandType() == 'U')
-        {
-            U = command_line[i].getCommandValue();
-            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
-            i--;
-            commandLineSize--;
-        }else
-
-        if(command_line[i].getCommandType() == 'V')
-        {
-            V = command_line[i].getCommandValue();
-            command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
-            i--;
-            commandLineSize--;
-        }else
-
-        if(command_line[i].getCommandType() == 'W')
-        {
-            W = command_line[i].getCommandValue();
             command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
             i--;
             commandLineSize--;
@@ -465,11 +417,10 @@ void CNCSetup::linearMove( double newX, double newY, double newZ, std::vector< G
                     break;
                 case DistanceMode::incrementalDistance :
                     feedrateMoveBy(this->feedRate, newX, newY, newZ);
-                    // absolutePosX += newX;
-                    // absolutePosY += newY;
-                    // absolutePosZ += newZ;
                     break;
             }
+            break;
+        default:
             break;
     }
 
@@ -481,7 +432,6 @@ void CNCSetup::arcMove( double X, double Y, double Z, std::vector< GCodeCommand>
     int I = 0;
     int J = 0;
     int K = 0;
-    int R = 0;
 
     bool isGivenR = false;
 
@@ -514,7 +464,6 @@ void CNCSetup::arcMove( double X, double Y, double Z, std::vector< GCodeCommand>
         
         if(command_line[i].getCommandType() == 'R')
         {
-            R = command_line[i].getCommandValue();
             command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
             i--;
             commandLineSize--;
@@ -542,21 +491,23 @@ void CNCSetup::arcMoveTo( double absoluteFinalX, double absoluteFinalY, double a
     switch (getMotionType())
     {
     case MotionTypeEnum::CircularInterpolationClockwise :
-        arc_vec = ArcPath::generate( 
-            X0, Y0, Z0, 
+        arc_vec = ArcPath::generate(
+            X0, Y0, Z0,
             absoluteFinalX, absoluteFinalY, absoluteFinalZ,
             I, J, K, CNCSetup::getMotionPlane(), true,
             getArcDistanceMode(), getDistanceMode()
         );
         break;
-    
+
     case MotionTypeEnum::CircularInterpolationCounterClockwise :
-        arc_vec = ArcPath::generate( 
-            X0, Y0, Z0, 
+        arc_vec = ArcPath::generate(
+            X0, Y0, Z0,
             absoluteFinalX, absoluteFinalY, absoluteFinalZ,
             I, J, K, CNCSetup::getMotionPlane(), false,
             getArcDistanceMode(), getDistanceMode()
         );
+        break;
+    default:
         break;
     }
 
@@ -564,7 +515,7 @@ void CNCSetup::arcMoveTo( double absoluteFinalX, double absoluteFinalY, double a
     double delta_y = 0;
     double delta_z = 0;
 
-    for(int i = 0; i < arc_vec.size(); i++)
+    for(int i = 0; i < (int)arc_vec.size(); i++)
     {
         
         delta_x = arc_vec[i].x - (absolutePosX - currentCoordinates.offsetX);
@@ -583,6 +534,8 @@ void CNCSetup::arcMoveTo( double absoluteFinalX, double absoluteFinalY, double a
 void CNCSetup::feedrateMoveBy(double feedrate, double deltaX, double deltaY, double deltaZ)
 {
     double deltaD = sqrt( pow(deltaX , 2) + pow(deltaY, 2) +  pow(deltaZ, 2));
+
+    if( deltaD < 1e-9 ) return;
 
     double XtoD = deltaX/deltaD;
     double YtoD = deltaY/deltaD;
@@ -631,16 +584,21 @@ void CNCSetup::rotate(StepperMotor& motor, double mmDistance, double axisFeedrat
     }
 
     double microstepsPerRevolution = 200* static_cast<int>(motor.getMicrosteps());
-    std::cout << "motor id " << motor.getId() << " msteps/rev: " << microstepsPerRevolution << std::endl;
     double revolutionsNeeded = mmDistance/motor.getLinearStep();
-    std::cout << "motor id " << motor.getId() << " revs needed: " << revolutionsNeeded << std::endl;
     int microstepsNeeded = static_cast<int>( revolutionsNeeded*microstepsPerRevolution );
-    std::cout << "motor id " << motor.getId() << " msteps needed: " << microstepsNeeded << std::endl;
 
-    double mmPerMicrostep = motor.getLinearStep()/microstepsPerRevolution; //mm/microstep
-    std::cout << "motor id " << motor.getId() << " mm/mstep: " << mmPerMicrostep << std::endl;
-    double feedratePerMicrosec = axisFeedrate/60/1000000; // mm/microsec
-    std::cout << "motor id " << motor.getId() << " f-rate/msec: " << feedratePerMicrosec << std::endl;
+    double mmPerMicrostep = motor.getLinearStep()/microstepsPerRevolution;
+    double feedratePerMicrosec = axisFeedrate/60/1000000;
+
+    {
+        std::lock_guard<std::mutex> lock(coutMutex);
+        std::cout << "motor id " << motor.getId()
+                  << " msteps/rev: " << microstepsPerRevolution
+                  << " revs: " << revolutionsNeeded
+                  << " msteps: " << microstepsNeeded
+                  << " mm/mstep: " << mmPerMicrostep
+                  << " f-rate/msec: " << feedratePerMicrosec << std::endl;
+    }
 
     double microsecsPerMicrostep = mmPerMicrostep / feedratePerMicrosec;
 
@@ -745,7 +703,7 @@ int CNCSetup::setPathMode( PathMode pathMode, std::vector< GCodeCommand >& comma
     std::cout << "path mode set to: " << static_cast<int>(pathMode);
     if( pathMode == PathMode::Blending )
     {
-        for( int i = 0; i < command_line.size(); i++)
+        for( int i = 0; i < (int)command_line.size(); i++)
         {
             if( command_line[i].getCommandType() == 'P')
             {
@@ -754,7 +712,7 @@ int CNCSetup::setPathMode( PathMode pathMode, std::vector< GCodeCommand >& comma
             }
         }
 
-        for( int i = 0; i < command_line.size(); i++)
+        for( int i = 0; i < (int)command_line.size(); i++)
         {
             if( command_line[i].getCommandType() == 'Q')
             {
@@ -816,13 +774,15 @@ int CNCSetup::setSpindleState( SpindleState spindleState,  std::vector<GCodeComm
     int letters_used = 0;
     if( spindleState == SpindleState::ONClockwise || spindleState == SpindleState::ONCounterClockwise )
     {
-        for(int i = 0; i < command_line.size(); i++)
+        for(int i = 0; i < (int)command_line.size(); i++)
         {
             if( command_line[i].getCommandType() == 'S' )
             {
+                double sValue = command_line[i].getCommandValue();
                 command_line.erase(command_line.begin() + i, command_line.begin()+i+1 );
                 letters_used++;
-                setSpindleSpeed( command_line[i].getCommandValue() );
+                i--;
+                setSpindleSpeed( sValue );
             }
         }
 
@@ -873,7 +833,7 @@ int CNCSetup::setToolLengthOffset( std::vector< GCodeCommand >& command_line )
 {
     int letters_used = 0;
     int H = 0;
-    for(int i = 0; i < command_line.size(); i++)
+    for(int i = 0; i < (int)command_line.size(); i++)
     {
         if(command_line[i].getCommandType() == 'H')
         {
@@ -918,9 +878,20 @@ void CNCSetup::setCurrentCoordinateSystem( double coordinateSystemId)
 
         std::cout << "New Coordinate System is being created..." << std::endl;
         std::cout << "Coordinate System "<< coordinateSystemId << std::endl;
-        std::cout << "insert Offset X: "; std::cin >> newOffsetX; std::cout << std::endl;
-        std::cout << "insert Offset Y: "; std::cin >> newOffsetY; std::cout << std::endl;
-        std::cout << "insert Offset Z: "; std::cin >> newOffsetZ; std::cout << std::endl;
+
+        auto readDouble = [](const std::string& prompt, double& out) {
+            while(true) {
+                std::cout << prompt;
+                if( std::cin >> out && std::isfinite(out) ) { std::cout << std::endl; return; }
+                std::cout << "Invalid value, try again." << std::endl;
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+        };
+
+        readDouble("insert Offset X: ", newOffsetX);
+        readDouble("insert Offset Y: ", newOffsetY);
+        readDouble("insert Offset Z: ", newOffsetZ);
 
         CoordinateSystem newCoordinateSystem( coordinateSystemId, newOffsetX, newOffsetY, newOffsetZ );
 
@@ -937,8 +908,6 @@ void CNCSetup::setCurrentCoordinateSystem( double coordinateSystemId)
 
 void CNCSetup::home()
 {
-    bool detected = 0;
-
     pinMode(limitSwitchX.getPin(), INPUT);
     // pullUpDnControl(limitSwitchX.getPin(), PUD_DOWN);
 

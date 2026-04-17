@@ -15,7 +15,8 @@
 #include "Tool.h"
 #include "pathMode.h"
 #include <thread>
-#include <functional>
+#include <mutex>
+#include <limits>
 #include "CoordinateSystem.h"
 #include <set>
 #include "LimitSwitch.h"
@@ -60,6 +61,8 @@ class CNCSetup
         SpindleState spindleState;
         double spindleSpeed;
         double toolLengthOffset;
+
+        std::mutex coutMutex;
 
 
 

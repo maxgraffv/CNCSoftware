@@ -44,6 +44,7 @@ double Spindle::getSpeed()
 
 void Spindle::setDirection( MotorRotationDirection direction)
 {
+    Motor::setDirection(direction);
     switch(direction)
     {
         case MotorRotationDirection::CLOCKWISE :
@@ -56,7 +57,7 @@ void Spindle::setDirection( MotorRotationDirection direction)
 
 MotorRotationDirection Spindle::getDirection()
 {
-    return getDirection();
+    return Motor::getDirection();
 }
 
 

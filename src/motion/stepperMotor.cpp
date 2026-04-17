@@ -9,11 +9,11 @@ StepperMotor::StepperMotor(int step_pin, int dir_pin, int en_pin,
     int ms1_pin, int ms2_pin, 
     MicrostepResolution microstepResolution, 
     MotorRotationDirection rotationDirection, double linearStep)
-:step_pin(step_pin), dir_pin(dir_pin), en_pin(en_pin), 
-ms1_pin(ms1_pin), ms2_pin(ms2_pin), 
+:step_pin(step_pin), dir_pin(dir_pin), en_pin(en_pin),
+ms2_pin(ms2_pin), ms1_pin(ms1_pin),
 microstepResolution(microstepResolution),
-positiveRotationDirection(rotationDirection), 
 currentRotationDirection(rotationDirection),
+positiveRotationDirection(rotationDirection),
 linearStep(linearStep)
 {
     // Setup wiringPi
@@ -55,7 +55,7 @@ void StepperMotor::disable()
     digitalWrite(en_pin, HIGH); // Disable pin active HIGH
 }
 
-void StepperMotor::setSpeed(double speed)
+void StepperMotor::setSpeed([[maybe_unused]] double speed)
 {
     std::cout << "Stepper Motor Speed Set" << std::endl;
 } 

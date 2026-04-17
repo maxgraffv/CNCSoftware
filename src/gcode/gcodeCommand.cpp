@@ -10,7 +10,15 @@ GCodeCommand::GCodeCommand( std::string commandStr )
 {
     commandType = commandStr[0];
     commandStr.erase(0, 1);
-    commandValue = std::stod( commandStr );
+    try {
+        commandValue = std::stod( commandStr );
+    } catch( const std::invalid_argument& ) {
+        std::cout << "Warning: invalid G-code value '" << commandStr << "' for type '" << commandType << "', defaulting to 0" << std::endl;
+        commandValue = 0.0;
+    } catch( const std::out_of_range& ) {
+        std::cout << "Warning: G-code value out of range '" << commandStr << "', defaulting to 0" << std::endl;
+        commandValue = 0.0;
+    }
     setPriority();
 
 }
