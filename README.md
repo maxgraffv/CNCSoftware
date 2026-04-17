@@ -4,7 +4,7 @@ A real-time CNC controller written in C++20 for a 3-axis (XYZ) router/mill runni
 
 ## Features
 
-- Interactive REPL shell (`GraffOS>`) and single-command CLI mode
+- Interactive REPL shell (`cncOS>`) and single-command CLI mode
 - G-code parser following [LinuxCNC order-of-execution](https://linuxcnc.org/docs/stable/html/gcode/overview.html#gcode:order-of-execution)
 - Multi-threaded motor control — all axes move simultaneously using `std::thread`
 - Circular interpolation (G2/G3) discretized to 0.1 mm segments with helix support
@@ -84,12 +84,12 @@ Both produce the executable `cncOS`.
 ```
 
 ```
-GraffOS> run gFiles/manual.ngc      # execute a G-code file
-GraffOS> moveby -x10 -y5 -z-2 -f500 # relative jog (mm, mm/min)
-GraffOS> info                        # print current position & state
-GraffOS> home                        # home all axes via limit switches
-GraffOS> mdi                         # enter MDI mode (single G-code lines)
-GraffOS> quit                        # disable motors and exit
+cncOS> run gFiles/manual.ngc      # execute a G-code file
+cncOS> moveby -x10 -y5 -z-2 -f500 # relative jog (mm, mm/min)
+cncOS> info                        # print current position & state
+cncOS> home                        # home all axes via limit switches
+cncOS> mdi                         # enter MDI mode (single G-code lines)
+cncOS> quit                        # disable motors and exit
 ```
 
 ### Single command
